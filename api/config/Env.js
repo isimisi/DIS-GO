@@ -10,7 +10,7 @@ dotenv.config({
 export default class Env {
    /**
     *
-    * @param {'PORT'} string
+    * @param {'PORT' | 'ACCESS_TOKEN_SECRET' | 'REFRESH_TOKEN_SECRET'} string
     */
    static get(string) {
       const env = process.env[string];
@@ -20,5 +20,3 @@ export default class Env {
       return env;
    }
 }
-
-

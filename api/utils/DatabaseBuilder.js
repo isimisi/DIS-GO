@@ -28,7 +28,7 @@ export default class DatabaseBuilder {
 
    static drop() {
       return new Promise((resolve, reject) => {
-         database.run(`DROP TABLE ${this.tableName}`, (error) => {
+         database.run(`DROP TABLE ${this.tableName}`, function (error) {
             if (error) return reject(error);
             resolve();
          });

@@ -1,4 +1,4 @@
-import database from '../../database.js';
+import database from '../../database/index.js';
 
 export default class BaseModel {
    static tableName = '';
@@ -8,7 +8,7 @@ export default class BaseModel {
    static all() {
       return new Promise((resolve, reject) => {
          const sql = `SELECT * FROM ${this.tableName}`;
-         database.all(sql, [], (error, rows) => {
+         database.all(sql, [], function (error, rows) {
             if (error) return reject(error);
             resolve(rows);
          });
@@ -17,24 +17,29 @@ export default class BaseModel {
 
    static find(id) {
       return new Promise((resolve, reject) => {
-         const sql = `SELECT * FROM ${this.tableName} WHERE id = ${id}`;
-         database.all(sql, [], (error, rows) => {
+         const sql = `SELECT * FROM ${this.tableName} WHERE id = ?`;
+         database.all(sql, [id], function (error, rows) {
             if (error) return reject(error);
             resolve(rows);
          });
       });
    }
 
-   static where(query) {
+   static where(query, ...args) {
       return new Promise((resolve, reject) => {
          const sql = `SELECT * FROM ${this.tableName} WHERE ${query}`;
-         database.all(sql, [], (error, rows) => {
+         database.all(sql, [args], function (error, rows) {
             if (error) return reject(error);
             resolve(rows);
          });
       });
    }
 
+   /**
+    *
+    * @param {*} data
+    * @returns integer
+    */
    static create(data) {
       let sql = `INSERT INTO ${this.tableName}(`;
       this.columns.forEach((column, index, array) => {
@@ -53,9 +58,9 @@ export default class BaseModel {
       sql += ')';
 
       return new Promise((resolve, reject) => {
-         database.run(sql, data, (error) => {
+         database.run(sql, Object.values(data), function (error) {
             if (error) return reject(error);
-            resolve();
+            resolve(this.lastID);
          });
       });
    }
@@ -65,17 +70,19 @@ export default class BaseModel {
     * @param {{[string]: value}} values
     */
    static update(values, id) {
-      let sql = `UPDATE ${this.tableName} SET`;
+      let sql = `UPDATE ${this.tableName} SET `;
       const newValues = [];
-      Object.entries(values).forEach(([key, value]) => {
+      Object.entries(values).forEach(([key, value], index, array) => {
          sql += `${key} = ?`;
+         if (index !== array.length - 1) sql += ', ';
+         else sql += ' ';
          newValues.push(value);
       });
 
       sql += `WHERE id = ?`;
 
       return new Promise((resolve, reject) => {
-         database.run(sql, [...newValues, id], (error) => {
+         database.run(sql, [...newValues, id], function (error) {
             if (error) return reject(error);
             resolve();
          });
@@ -84,9 +91,22 @@ export default class BaseModel {
 
    static remove(id) {
       const sql = `DELETE FROM ${this.tableName} WHERE id = ?`;
-      database.run(sql, [id], (error) => {
-         if (error) return reject(error);
-         resolve();
+      return new Promise((resolve, reject) => {
+         database.run(sql, [id], function (error) {
+            if (error) return reject(error);
+            resolve();
+         });
+      });
+   }
+
+   static last() {
+      const sql = `SELECT * FROM ${this.tableName} ORDER BY id DESC LIMIT 1`;
+
+      return new Promise((resolve, reject) => {
+         database.all(sql, [], function (error, rows) {
+            if (error) return reject(error);
+            resolve(rows);
+         });
       });
    }
 }

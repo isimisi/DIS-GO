@@ -7,7 +7,6 @@ export default class Users extends DatabaseBuilder {
       id: 'INTEGER PRIMARY KEY',
       first_name: 'TEXT NOT NULL',
       password: 'TEXT NOT NULL',
-      email: 'TEXT NOT NULL',
+      email: 'TEXT NOT NULL UNIQUE',
    };
 }
-
