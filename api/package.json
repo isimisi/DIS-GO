@@ -1,0 +1,29 @@
+{
+   "name": "api",
+   "version": "1.0.0",
+   "description": "",
+   "main": "index.js",
+   "scripts": {
+      "dev": "nodemon index.js",
+      "start": "node index.js",
+      "test": "echo \"Error: no test specified\" && exit 1",
+      "migrations": "node ./database/run-migrations.js"
+   },
+   "keywords": [],
+   "author": "",
+   "license": "ISC",
+   "dependencies": {
+      "body-parser": "^1.20.1",
+      "cli-box": "^6.0.10",
+      "dotenv": "^16.0.3",
+      "express": "^4.18.2",
+      "sqlite3": "^5.1.2"
+   },
+   "type": "module",
+   "imports": {
+      "#config/*": "./config/*.js"
+   },
+   "devDependencies": {
+      "nodemon": "^2.0.20"
+   }
+}
