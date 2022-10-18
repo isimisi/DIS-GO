@@ -19,3 +19,7 @@ export const loadFromLocalStorage = () => {
       return undefined;
    }
 };
+
+export const clearLocalStorage = () => {
+   localStorage.removeItem('persistantState');
+};

@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useEffect, useState } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -12,14 +12,25 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import FormatListNumberedOutlinedIcon from '@mui/icons-material/FormatListNumberedOutlined';
+import { clearLocalStorage } from '../api/localStorage';
 
-const pages = ['todo-list', 'login', 'signup'];
 const settings = ['Logout'];
 
 const ResponsiveAppBar = (props) => {
-   const { isLoggedIn, register, todoList, goToPage } = props;
-   const [anchorElNav, setAnchorElNav] = React.useState(null);
-   const [anchorElUser, setAnchorElUser] = React.useState(null);
+   const { isLoggedIn, goToPage, login, resetItems } = props;
+   const [anchorElNav, setAnchorElNav] = useState(null);
+   const [anchorElUser, setAnchorElUser] = useState(null);
+   const [pages, setPages] = useState(['login', 'signup']);
+
+   useEffect(() => {
+      if (!isLoggedIn && pages.length !== 2) {
+         setPages(['login', 'signup']);
+      }
+
+      if (isLoggedIn) {
+         setPages(['todo-list']);
+      }
+   }, [isLoggedIn, pages]);
 
    const handleOpenNavMenu = (event) => {
       setAnchorElNav(event.currentTarget);
@@ -33,11 +44,20 @@ const ResponsiveAppBar = (props) => {
    };
 
    const handleGoToPage = (page) => {
+      setAnchorElNav(null);
       goToPage(page);
    };
 
    const handleCloseUserMenu = () => {
       setAnchorElUser(null);
+   };
+
+   const handleLogout = () => {
+      login(false);
+      resetItems();
+      clearLocalStorage();
+      handleCloseUserMenu();
+      goToPage('login');
    };
 
    return (
@@ -92,7 +112,9 @@ const ResponsiveAppBar = (props) => {
                         display: { xs: 'block', md: 'none' },
                      }}>
                      {pages.map((page) => (
-                        <MenuItem key={page} onClick={handleCloseNavMenu}>
+                        <MenuItem
+                           key={page}
+                           onClick={() => handleGoToPage(page)}>
                            <Typography textAlign="center">{page}</Typography>
                         </MenuItem>
                      ))}
@@ -130,14 +152,16 @@ const ResponsiveAppBar = (props) => {
                </Box>
 
                <Box sx={{ flexGrow: 0 }}>
-                  <Tooltip title="Open settings">
-                     <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                        <Avatar
-                           alt="Remy Sharp"
-                           src="/static/images/avatar/2.jpg"
-                        />
-                     </IconButton>
-                  </Tooltip>
+                  {isLoggedIn && (
+                     <Tooltip title="Open settings">
+                        <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                           <Avatar
+                              alt="Remy Sharp"
+                              src="/static/images/avatar/2.jpg"
+                           />
+                        </IconButton>
+                     </Tooltip>
+                  )}
                   <Menu
                      sx={{ mt: '45px' }}
                      id="menu-appbar"
@@ -154,7 +178,13 @@ const ResponsiveAppBar = (props) => {
                      open={Boolean(anchorElUser)}
                      onClose={handleCloseUserMenu}>
                      {settings.map((setting) => (
-                        <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                        <MenuItem
+                           key={setting}
+                           onClick={
+                              setting === 'Logout'
+                                 ? handleLogout
+                                 : handleCloseUserMenu
+                           }>
                            <Typography textAlign="center">{setting}</Typography>
                         </MenuItem>
                      ))}

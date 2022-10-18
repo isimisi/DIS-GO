@@ -2,20 +2,86 @@ import './App.css';
 import { useState } from 'react';
 import RegisterForm from './components/RegisterForm';
 import ResponsiveAppBar from './components/AppBar';
+import LoaderSpinner from './components/LoaderSpinner';
+import LoginForm from './components/LoginForm';
+import { useEffect } from 'react';
+import { fetchTodos } from './api/todos';
+import Todo from './components/Todo';
 
 function App() {
-   const [pageState, setPageState] = useState('login');
+   const [pageState, setPageState] = useState('todo-list');
+   const [loadingState, setLoadingState] = useState(true);
+   const [itemsState, setItemsState] = useState([]);
+   const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+   const loadingHandler = () => {
+      setLoadingState((prevState) => !prevState);
+   };
+
+   /**
+    *
+    * @param {boolean} boolean
+    */
+   const loginHandler = (boolean) => {
+      setIsLoggedIn(boolean);
+   };
+
+   const resetItemsHandler = () => {
+      setItemsState([]);
+   };
 
    const handleGoToPage = (page) => {
       setPageState(page);
    };
+   /**
+    *
+    * @param {{ id: number, user_id: number, todo_text: string, is_done: number}} data
+    */
+   const addItemsHandler = (data) => {
+      setItemsState((prevState) => [...prevState, data]);
+   };
+
+   useEffect(() => {
+      fetchTodos()
+         .then((res) => {
+            if (res.error) {
+               setPageState('login');
+               setIsLoggedIn(false);
+               return;
+            }
+            setItemsState(res);
+            setIsLoggedIn(true);
+         })
+         .finally(() => {
+            setLoadingState(false);
+         });
+   }, [isLoggedIn]);
+
+   const content = loadingState ? (
+      <LoaderSpinner />
+   ) : (
+      <>
+         {pageState === 'signup' && (
+            <RegisterForm goToPage={handleGoToPage} loading={loadingHandler} login={loginHandler} />
+         )}
+         {pageState === 'login' && (
+            <LoginForm goToPage={handleGoToPage} loading={loadingHandler} login={loginHandler}/>
+         )}
+         {pageState === 'todo-list' && (
+            <Todo items={itemsState} addItems={addItemsHandler} />
+         )}
+      </>
+   );
 
    return (
       <div className="App">
-         <ResponsiveAppBar goToPage={handleGoToPage} />
-         {pageState === 'signup' && <RegisterForm goToPage={handleGoToPage}/>}
-         {pageState === 'login' && <h2>Login</h2>}
-         {pageState === 'todo-list' && <h2>Todo</h2>}
+         <ResponsiveAppBar
+            goToPage={handleGoToPage}
+            isLoggedIn={isLoggedIn}
+            login={loginHandler}
+            resetItems={resetItemsHandler}
+         />
+         {content}
       </div>
    );
 }

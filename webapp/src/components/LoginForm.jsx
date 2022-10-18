@@ -1,21 +1,12 @@
 import useInput from '../hooks/useInput.js';
 import { useState } from 'react';
 import { TextField, Box, Button } from '@mui/material';
-import registerUser from '../api/register.js';
+import login from '../api/login.js';
 import { saveToLocalStorage } from '../api/localStorage.js';
 import LoadingButton from '@mui/lab/LoadingButton';
 
-const RegisterForm = (props) => {
+const LoginForm = (props) => {
    const [loadingState, setLoadingState] = useState(false);
-
-   const {
-      value: enteredFName,
-      isValid: fNameIsValid,
-      hasError: fNameInputHasError,
-      valueChangeHandler: fNameChangeHandler,
-      inputBlurHandler: fNameBlurHandler,
-      reset: fNameReset,
-   } = useInput();
 
    const {
       value: enteredEmail,
@@ -37,9 +28,14 @@ const RegisterForm = (props) => {
 
    let formIsValid = false;
 
-   if (fNameIsValid && passwordIsValid && emailIsValid) {
+   if (passwordIsValid && emailIsValid) {
       formIsValid = true;
    }
+
+   const handleGoToCreateAccount = (e) => {
+      e.preventDefault();
+      props.goToPage('signup');
+   };
 
    const formSubmissionHandler = async (e) => {
       e.preventDefault();
@@ -50,24 +46,21 @@ const RegisterForm = (props) => {
 
       setLoadingState(true);
       const data = {
-         first_name: enteredFName,
          password: enteredPassword,
          email: enteredEmail,
       };
 
-      const response = await registerUser(data);
-      console.log(response);
+      const response = await login(data);
+
       if (response.error) {
          return console.log(response.error);
       }
-
-      fNameReset();
       emailReset();
       passwordReset();
 
-      saveToLocalStorage({ token: response.meta.accessToken });
+      saveToLocalStorage({ token: response.accessToken });
       setLoadingState(false);
-      props.login(true);
+      props.login(true)
       props.goToPage('todo-list');
    };
 
@@ -78,7 +71,7 @@ const RegisterForm = (props) => {
             '& > :not(style)': { m: 1, width: '25ch' },
             width: 400,
             maxWidth: 600,
-            height: 400,
+            height: 300,
             padding: '0.5rem',
             margin: '3rem auto',
             border: 2,
@@ -91,19 +84,7 @@ const RegisterForm = (props) => {
          }}
          noValidate
          autoComplete="off">
-         <h2 style={{ color: '#002E94' }}>Sign up</h2>
-         <TextField
-            style={{ width: '80%' }}
-            id="first_name"
-            label="First Name"
-            variant="filled"
-            required
-            value={enteredFName}
-            onChange={fNameChangeHandler}
-            onBlur={fNameBlurHandler}
-            error={fNameInputHasError}
-            helperText={fNameInputHasError && "This field can't be empty"}
-         />
+         <h2 style={{ color: '#002E94' }}>Login</h2>
          <TextField
             id="email"
             style={{ width: '80%' }}
@@ -134,16 +115,36 @@ const RegisterForm = (props) => {
                'Your password must have a length greater than 7'
             }
          />
-         <LoadingButton
-            variant="outlined"
-            loading={loadingState}
-            disabled={!formIsValid}
-            type="submit"
-            onClick={formSubmissionHandler}>
-            Create Account
-         </LoadingButton>
+         <div
+            style={{
+               display: 'flex',
+               justifyContent: 'space-between',
+               width: '70%',
+            }}>
+            <LoadingButton
+               variant="outlined"
+               loading={loadingState}
+               disabled={!formIsValid}
+               onClick={formSubmissionHandler}
+               type="submit">
+               Login
+            </LoadingButton>
+            <label
+               style={{
+                  fontSize: '10px',
+                  margin: '3px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  color: 'gray',
+               }}>
+               <Button variant="outlined" onClick={handleGoToCreateAccount}>
+                  Create account
+               </Button>
+               Click here to create an account
+            </label>
+         </div>
       </Box>
    );
 };
 
-export default RegisterForm;
+export default LoginForm;

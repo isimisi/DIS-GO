@@ -30,7 +30,7 @@ const box = new Box(
       hAlign: 'middle',
    },
    `Server @ ${version}
-    ► Name:   ${serverName}
+    ► Name :   ${serverName}
      ► Device IP :   ${ip.address()}
   
   Listening: http://localhost:${port}/`

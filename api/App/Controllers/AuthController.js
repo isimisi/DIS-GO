@@ -8,11 +8,12 @@ export default class AuthController {
       const { email, password } = request.body;
 
       try {
-         const [user] = await User.where('email = ?', email);
-         if (!user) return response.sendStatus(403);
+         const [user] = await User.where('email = ?', email.toLowerCase());
+         if (!user) return response.status(403).send('No user with email');
          const verifyPassword = await Hash.verify(user.password, password);
 
-         if (!verifyPassword) return response.sendStatus(403);
+         if (!verifyPassword)
+            return response.status(403).send('wrong password');
 
          const access_token_secret = Env.get('ACCESS_TOKEN_SECRET');
 
@@ -32,13 +33,20 @@ export default class AuthController {
    static async register(request, response) {
       const { first_name, password, email } = request.body;
       try {
-         const [emailExists] = await User.where('email = ?', email);
+         const [emailExists] = await User.where(
+            'email = ?',
+            email.toLowerCase()
+         );
          if (emailExists)
             return response
                .status(401)
                .json({ message: 'Email already in use' });
 
-         const id = await User.create({ first_name, password, email });
+         const id = await User.create({
+            first_name,
+            password,
+            email: email.toLowerCase(),
+         });
          const [user] = await User.find(id);
          const access_token_secret = Env.get('ACCESS_TOKEN_SECRET');
 

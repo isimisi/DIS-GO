@@ -50,11 +50,12 @@ export default class TodoController {
          const [todo] = await Todo.find(id);
 
          todo.todo_text = todo_text || todo.todo_text;
-         todo.is_done = is_done || todo.is_done;
+         todo.is_done = is_done != undefined ? is_done : todo.is_done;
 
          await Todo.update(todo, id);
          response.json(todo);
       } catch (error) {
+         console.log(error);
          response.status(501).json(error);
       }
    }
