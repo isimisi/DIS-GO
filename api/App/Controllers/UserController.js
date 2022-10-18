@@ -7,7 +7,12 @@ export default class UserController {
    static async index(request, response) {
       try {
          const users = await User.all();
-         response.json(users);
+         response.json(
+            users.map((user) => {
+               delete user.password;
+               return user;
+            })
+         );
       } catch (error) {
          response.status(400).send('error');
       }
@@ -19,6 +24,7 @@ export default class UserController {
    static async show(request, response) {
       try {
          const user = request.user;
+         delete user.password;
          response.json(user);
       } catch (error) {}
    }
@@ -31,6 +37,7 @@ export default class UserController {
       try {
          const id = await User.create({ first_name, password, email });
          const [user] = await User.find(id);
+         delete user.password;
          response.json(user);
       } catch (error) {
          console.log(error);
@@ -52,7 +59,7 @@ export default class UserController {
          user.email = email || user.email;
 
          await User.update(user, id);
-
+         delete user.password;
          response.json(user);
       } catch (error) {
          console.log(error);

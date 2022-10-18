@@ -1,25 +1,23 @@
-import logo from './logo.svg';
 import './App.css';
+import { useState } from 'react';
+import RegisterForm from './components/RegisterForm';
+import ResponsiveAppBar from './components/AppBar';
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+   const [pageState, setPageState] = useState('login');
+
+   const handleGoToPage = (page) => {
+      setPageState(page);
+   };
+
+   return (
+      <div className="App">
+         <ResponsiveAppBar goToPage={handleGoToPage} />
+         {pageState === 'signup' && <RegisterForm goToPage={handleGoToPage}/>}
+         {pageState === 'login' && <h2>Login</h2>}
+         {pageState === 'todo-list' && <h2>Todo</h2>}
+      </div>
+   );
 }
 
 export default App;

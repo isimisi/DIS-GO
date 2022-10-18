@@ -32,7 +32,7 @@ export default class AuthController {
    static async register(request, response) {
       const { first_name, password, email } = request.body;
       try {
-         const emailExists = await User.where('email = ?', email);
+         const [emailExists] = await User.where('email = ?', email);
          if (emailExists)
             return response
                .status(401)
@@ -40,6 +40,14 @@ export default class AuthController {
 
          const id = await User.create({ first_name, password, email });
          const [user] = await User.find(id);
+         const access_token_secret = Env.get('ACCESS_TOKEN_SECRET');
+
+         const accessToken = jwt.sign(
+            { email: user.email },
+            access_token_secret
+         );
+         delete user.password;
+         user.meta = { accessToken };
          response.json(user);
       } catch (error) {
          response.status(500).send(error);
