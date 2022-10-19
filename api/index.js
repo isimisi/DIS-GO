@@ -1,10 +1,8 @@
 import express from 'express';
 import Env from '#config/Env';
 import startupMsg from './utils/cli-box.js';
-import userController from './App/Controllers/UserController.js';
 import userRouter from './routes/user.js';
 import authRouter from './routes/auth.js';
-import User from './App/Models/User.js';
 import todoRouter from './routes/todo.js';
 import cors from 'cors';
 
@@ -18,12 +16,6 @@ app.use(express.urlencoded({ extended: true }));
 
 app.get('/', function (req, res) {
    res.send('Hello World');
-});
-
-app.post('/test', async (req, res) => {
-   const { email } = req.body;
-   const user = await User.where('email = ?', email);
-   res.json(user);
 });
 
 app.use('/users', userRouter);

@@ -1,8 +1,9 @@
-import { loadFromLocalStorage } from "./localStorage";
+import { loadFromLocalStorage } from './localStorage';
 
 export const baseUrl =
-   window.location.hostname === 'nginx' ? 'nginx' : 'http://localhost:3333';
-
+   window.location.hostname === '134.122.73.248'
+      ? 'http://159.89.8.171'
+      : 'http://localhost:3333';
 
 export const getToken = (user) => {
    const meta = user && user.meta;

@@ -1,6 +1,7 @@
 .todo {
    margin: 3rem auto;
-   width: 500px;
+   max-width: 500px;
+   width: 90%;
    /* border: 3px solid #002E94; */
    background-color: #c9e1ff;
    border-radius: 12px;

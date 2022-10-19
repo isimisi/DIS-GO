@@ -75,8 +75,8 @@ const RegisterForm = (props) => {
          component="form"
          sx={{
             '& > :not(style)': { m: 1, width: '25ch' },
-            width: 400,
-            maxWidth: 600,
+            width: '90%',
+            maxWidth: 400,
             height: 400,
             padding: '0.5rem',
             margin: '3rem auto',
