@@ -9,11 +9,12 @@ export default class AuthController {
 
       try {
          const [user] = await User.where('email = ?', email.toLowerCase());
-         if (!user) return response.status(403).send('No user with email');
+         if (!user)
+            return response.status(403).send('incorrect email or password');
          const verifyPassword = await Hash.verify(user.password, password);
 
          if (!verifyPassword)
-            return response.status(403).send('wrong password');
+            return response.status(403).send('incorrect email or password');
 
          const access_token_secret = Env.get('ACCESS_TOKEN_SECRET');
 

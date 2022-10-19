@@ -7,7 +7,7 @@ function Todo(props) {
    return (
       <div className="todo">
          <TodoInput addItem={props.addItems} />
-         <TodoList items={props.items} />
+         <TodoList items={props.items} removeItem={props.removeItem}/>
       </div>
    );
 }

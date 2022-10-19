@@ -41,6 +41,15 @@ function App() {
       setItemsState((prevState) => [...prevState, data]);
    };
 
+   const deleteItemHandler = (id) => {
+      setItemsState((prevState) => {
+         const copy = [...prevState];
+         const index = copy.findIndex((item) => item.id === id);
+         copy.splice(index, 1);
+         return copy;
+      });
+   };
+
    useEffect(() => {
       fetchTodos()
          .then((res) => {
@@ -62,13 +71,25 @@ function App() {
    ) : (
       <>
          {pageState === 'signup' && (
-            <RegisterForm goToPage={handleGoToPage} loading={loadingHandler} login={loginHandler} />
+            <RegisterForm
+               goToPage={handleGoToPage}
+               loading={loadingHandler}
+               login={loginHandler}
+            />
          )}
          {pageState === 'login' && (
-            <LoginForm goToPage={handleGoToPage} loading={loadingHandler} login={loginHandler}/>
+            <LoginForm
+               goToPage={handleGoToPage}
+               loading={loadingHandler}
+               login={loginHandler}
+            />
          )}
          {pageState === 'todo-list' && (
-            <Todo items={itemsState} addItems={addItemsHandler} />
+            <Todo
+               items={itemsState}
+               addItems={addItemsHandler}
+               removeItem={deleteItemHandler}
+            />
          )}
       </>
    );

@@ -23,14 +23,14 @@ const ResponsiveAppBar = (props) => {
    const [pages, setPages] = useState(['login', 'signup']);
 
    useEffect(() => {
-      if (!isLoggedIn && pages.length !== 2) {
+      if (!isLoggedIn) {
          setPages(['login', 'signup']);
       }
 
       if (isLoggedIn) {
          setPages(['todo-list']);
       }
-   }, [isLoggedIn, pages]);
+   }, [isLoggedIn]);
 
    const handleOpenNavMenu = (event) => {
       setAnchorElNav(event.currentTarget);

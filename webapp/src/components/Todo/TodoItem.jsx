@@ -5,6 +5,9 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Checkbox from '@mui/material/Checkbox';
 import { updateTodo } from '../../api/todos';
+import { IconButton } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { removeTodo } from '../../api/todos';
 
 export default function TodoItem(props) {
    const [checked, setChecked] = useState(false);
@@ -13,7 +16,7 @@ export default function TodoItem(props) {
       if (props.checked) {
          setChecked(true);
       }
-   }, []);
+   }, [props.checked]);
 
    const handleToggle = () => {
       setChecked((prevValue) => !prevValue);
@@ -24,19 +27,35 @@ export default function TodoItem(props) {
       });
    };
 
+   const removeHandler = (e) => {
+      e.preventDefault();
+      props.removeItem(props.id);
+      removeTodo(props.id);
+   };
+
    const style = checked
       ? { textDecoration: 'line-through', color: 'gray' }
       : {};
 
    style.textTransform = 'capitalize';
-   
+
    return (
       <ListItem
          key={props.id}
          disablePadding
          sx={{
             bgcolor: '#fcf5ed',
-         }}>
+         }}
+         secondaryAction={
+            checked && (
+               <IconButton
+                  edge="end"
+                  aria-label="delete"
+                  onClick={removeHandler}>
+                  <DeleteIcon />
+               </IconButton>
+            )
+         }>
          <ListItemButton role={undefined} onClick={handleToggle} dense>
             <ListItemIcon>
                <Checkbox

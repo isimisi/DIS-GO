@@ -7,7 +7,6 @@ function TodoInput(props) {
    const {
       value: enteredTodo,
       isValid: todoIsValid,
-      hasError: todoHasError,
       valueChangeHandler: todoChangeHandler,
       inputBlurHandler: todoBlurHandler,
       reset: todoReset,
@@ -15,6 +14,7 @@ function TodoInput(props) {
 
    const enterHandler = (e) => {
       if (e.key === 'Enter') {
+         if (!todoIsValid) return;
          todoReset();
          createTodo(e.target.value)
             .then((res) => props.addItem(res))

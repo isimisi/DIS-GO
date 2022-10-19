@@ -25,7 +25,6 @@ export async function updateTodo({ id, todo_text, is_done }) {
       const { data: todo } = await axios.put(url, data, header);
       return todo;
    } catch (error) {
-      console.log(error);
       return {
          error: {
             message: error.response.data,
@@ -42,7 +41,21 @@ export async function createTodo(todo_text) {
       const { data: todo } = await axios.post(url, data, header);
       return todo;
    } catch (error) {
-      console.log(error);
+      return {
+         error: {
+            message: error.response.data,
+         },
+      };
+   }
+}
+
+export async function removeTodo(id) {
+   const url = `${baseUrl}/todos/${id}`;
+   const header = authHeader();
+   try {
+      const { data: successMessage } = await axios.delete(url, header);
+      return successMessage;
+   } catch (error) {
       return {
          error: {
             message: error.response.data,

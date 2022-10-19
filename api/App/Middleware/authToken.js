@@ -5,7 +5,7 @@ import User from '../Models/User.js';
 export default function authToken(request, response, next) {
    const authHeader = request.headers['authorization'];
    const [, token] = authHeader && authHeader.split(' ');
-   if (token == null) return response.sendStatus(401);
+   if (token == null) return response.status(401).send('Unauthorized');
    return new Promise((resolve, reject) => {
       jwt.verify(token, Env.get('ACCESS_TOKEN_SECRET'), async (error, data) => {
          if (error) return reject(error);
@@ -19,5 +19,5 @@ export default function authToken(request, response, next) {
       });
    })
       .then(() => next())
-      .catch(() => response.sendStatus(403));
+      .catch(() => response.status(403).send('Forbidden'));
 }

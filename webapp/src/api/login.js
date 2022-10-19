@@ -8,7 +8,6 @@ export default async function login(data) {
       const { data: token } = await axios.post(url, body);
       return token;
    } catch (error) {
-      console.log(error);
       return {
          error: {
             message: error.response.data,

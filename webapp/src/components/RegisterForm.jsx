@@ -1,6 +1,6 @@
 import useInput from '../hooks/useInput.js';
 import { useState } from 'react';
-import { TextField, Box, Button } from '@mui/material';
+import { TextField, Box } from '@mui/material';
 import registerUser from '../api/register.js';
 import { saveToLocalStorage } from '../api/localStorage.js';
 import LoadingButton from '@mui/lab/LoadingButton';
@@ -56,9 +56,8 @@ const RegisterForm = (props) => {
       };
 
       const response = await registerUser(data);
-      console.log(response);
       if (response.error) {
-         return console.log(response.error);
+         return;
       }
 
       fNameReset();

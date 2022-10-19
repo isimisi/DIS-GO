@@ -7,6 +7,7 @@ import LoadingButton from '@mui/lab/LoadingButton';
 
 const LoginForm = (props) => {
    const [loadingState, setLoadingState] = useState(false);
+   const [responseIsValid, setResponseIsValid] = useState(true);
 
    const {
       value: enteredEmail,
@@ -24,7 +25,7 @@ const LoginForm = (props) => {
       valueChangeHandler: passwordChangeHandler,
       inputBlurHandler: passwordBlurHandler,
       reset: passwordReset,
-   } = useInput((password) => password.length > 7);
+   } = useInput();
 
    let formIsValid = false;
 
@@ -53,14 +54,17 @@ const LoginForm = (props) => {
       const response = await login(data);
 
       if (response.error) {
-         return console.log(response.error);
+         setResponseIsValid(false);
+         setLoadingState(false);
+         passwordReset();
+         return;
       }
       emailReset();
       passwordReset();
 
       saveToLocalStorage({ token: response.accessToken });
       setLoadingState(false);
-      props.login(true)
+      props.login(true);
       props.goToPage('todo-list');
    };
 
@@ -96,7 +100,7 @@ const LoginForm = (props) => {
             onChange={emailChangeHandler}
             onBlur={emailBlurHandler}
             fullWidth
-            error={emailInputHasError}
+            error={emailInputHasError || !responseIsValid}
             helperText={emailInputHasError && 'Must be a valid email'}
          />
          <TextField
@@ -109,11 +113,8 @@ const LoginForm = (props) => {
             onChange={passwordChangeHandler}
             onBlur={passwordBlurHandler}
             type="password"
-            error={passwordInputHasError}
-            helperText={
-               passwordInputHasError &&
-               'Your password must have a length greater than 7'
-            }
+            error={passwordInputHasError || !responseIsValid}
+            helperText={!responseIsValid && 'Incorrect email or password'}
          />
          <div
             style={{

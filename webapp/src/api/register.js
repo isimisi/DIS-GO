@@ -8,7 +8,6 @@ export default async function registerUser(data) {
       const { data: user } = await axios.post(url, body);
       return user;
    } catch (error) {
-      console.log(error);
       return {
          error: {
             message: error.response.data,
