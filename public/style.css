@@ -1,0 +1,103 @@
+.nav-link-custom {
+   cursor: pointer;
+   color: white
+}
+.nav-link-custom:hover {
+    color: rgb(255, 255, 255);
+}
+
+.nav-item {
+    background-color: #5a6372;
+    border-radius: 8px 8px 0px 0px;
+}
+
+.nav-item:hover {
+    background-color: #494f5b;
+    
+}
+
+.form-custom {
+   width: auto;
+}
+
+.form-control-custom {
+   width: 90% !important;
+   margin: auto;
+}
+
+.btn.search {
+   background-color: #1e8180;
+   border: 1px solid white;
+   margin: 15px auto;
+}
+
+.btn {
+   background-color: #5b6ea8;
+   border: 1px solid #5b6ea8;
+}
+
+.btn:focus {
+   background-color: #3d4a71;
+   border-color: #3d4a71;
+}
+
+.btn:hover {
+   background-color: #3d4a71;
+   border-color: #3d4a71;
+}
+
+.btn.search:hover {
+   background-color: #166765;
+   border-color: #166765;
+}
+
+body {
+   background-color: #1f2027;
+}
+
+.card.text-center {
+   margin: auto;
+   width: 80%;
+   min-height: 500px;
+   background-color: #8b9dbd;
+}
+
+.card-body {
+   display: flex;
+   flex-direction: column;
+   justify-content: center;
+}
+
+.dropdown-menu.dropdown-menu-dark {
+   background-color: #3d4a71;
+}
+
+.dropdown-item {
+   cursor: pointer;
+}
+
+h5 {
+    color: white;
+    font-size: 25px;
+}
+
+.active {
+   background-color: #8b9dbd !important;
+   border: 1px solid rgb(114, 114, 114) !important ;
+   border-bottom: 1px solid #8b9dbd !important;
+   cursor: default;
+}
+
+.output {
+   margin: auto auto 8rem auto;
+   max-width: 300px;
+}
+
+.list-group.list-group-flush {
+   background-color: rgba(0, 0, 0, 0);
+}
+
+.list-group-item{
+   font-weight: bold;
+   background-color: rgba(0, 0, 0, 0);
+}
