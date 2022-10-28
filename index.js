@@ -22,7 +22,7 @@ app.get('/ping', async (request, response) => {
    try {
       const { host } = request.query;
 
-      if (!host) response.status(400).send('No host was provided');
+      if (!host) return response.status(400).send('No host was provided');
 
       if (host.match(ValidIpOrHostNameRegex) === null)
          return response
@@ -46,17 +46,17 @@ app.get('/ping', async (request, response) => {
          await (await Host.where('host', host)).update(averageRTT);
       }
 
-      response.json({
+      return response.json({
          averageRTT,
          host,
       });
    } catch (error) {
-      response.status(500).json(error);
+      return response.status(500).json(error);
    }
 });
 
 app.get('/list', (request, response) => {
-   response.sendFile(join(__dirname, 'public', 'list.html'), {}, (error) => {
+   return response.sendFile(join(__dirname, 'public', 'list.html'), {}, (error) => {
       if (error) response.status(500).json(error);
    });
 });
@@ -64,14 +64,14 @@ app.get('/list', (request, response) => {
 app.get('/hosts', async (request, response) => {
    try {
       const hosts = await Host.all();
-      response.json(hosts);
+      return response.json(hosts);
    } catch (error) {
-      response.status(500).json(error);
+      return response.status(500).json(error);
    }
 });
 
 app.get('*', (request, response) => {
-   response.status(404).json({
+   return response.status(404).json({
       error: {
          errorCode: 404,
          message: 'Page not found',
