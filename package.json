@@ -1,21 +1,23 @@
 {
-  "name": "go3",
-  "version": "1.0.0",
-  "description": "pinger application",
-  "main": "index.js",
-  "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js"
-  },
-  "keywords": [],
-  "author": "isimisi",
-  "license": "ISC",
-  "dependencies": {
-    "cors": "^2.8.5",
-    "dotenv": "^16.0.3",
-    "express": "^4.18.2",
-    "icmp": "^2.0.1",
-    "nodemon": "^2.0.20"
-  },
-  "type": "module"
+   "name": "go3",
+   "version": "1.0.0",
+   "description": "pinger application",
+   "main": "index.js",
+   "scripts": {
+      "start": "node index.js",
+      "dev": "nodemon index.js",
+      "migration": "node ./database/run-migration.js"
+   },
+   "keywords": [],
+   "author": "isimisi",
+   "license": "ISC",
+   "dependencies": {
+      "cors": "^2.8.5",
+      "dotenv": "^16.0.3",
+      "express": "^4.18.2",
+      "icmp": "^2.0.1",
+      "nodemon": "^2.0.20",
+      "sqlite3": "^5.1.2"
+   },
+   "type": "module"
 }

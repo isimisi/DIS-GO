@@ -19,14 +19,17 @@
          <div class="card-header">
             <ul class="nav nav-tabs card-header-tabs">
                <li class="nav-item">
-                  <a class="nav-link active nav-link-custom" aria-current="true"
+                  <a
+                     class="nav-link active nav-link-custom"
+                     id="pinger"
+                     aria-current="true"
                      >Pinger</a
                   >
                </li>
                <li class="nav-item">
                   <a
                      class="nav-link nav-link-custom"
-                     onclick="console.log('deez nuts')"
+                     id="list"
                      >List of pingers</a
                   >
                </li>
@@ -40,12 +43,21 @@
                   type="button"
                   data-bs-toggle="dropdown"
                   aria-expanded="false"
+                  id="dropdown-btn"
                >
                   List of Servers
                </button>
                <ul class="dropdown-menu dropdown-menu-dark">
-                  <li><a class="dropdown-item" id="frontend">Frontend - React App</a></li>
-                  <li><a class="dropdown-item" id="backend">Backend - Express App</a></li>
+                  <li>
+                     <a class="dropdown-item" id="frontend"
+                        >Frontend - React App</a
+                     >
+                  </li>
+                  <li>
+                     <a class="dropdown-item" id="backend"
+                        >Backend - Express App</a
+                     >
+                  </li>
                   <li><hr class="dropdown-divider" /></li>
                   <li>
                      <form class="form-custom">
@@ -67,8 +79,8 @@
          </div>
          <output class="output">
             <ul class="list-group list-group-flush">
-               <li class="list-group-item">Host: 300.123.15.13</li>
-               <li class="list-group-item">RTT: 3ms</li>
+               <li class="list-group-item">Host: example.com</li>
+               <li class="list-group-item">RTT: 20ms</li>
             </ul>
          </output>
       </div>
