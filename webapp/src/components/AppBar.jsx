@@ -12,7 +12,7 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import FormatListNumberedOutlinedIcon from '@mui/icons-material/FormatListNumberedOutlined';
-import { clearLocalStorage } from '../api/localStorage';
+import { logout } from '../api/login';
 
 const settings = ['Logout'];
 
@@ -52,10 +52,10 @@ const ResponsiveAppBar = (props) => {
       setAnchorElUser(null);
    };
 
-   const handleLogout = () => {
+   const handleLogout = async () => {
       login(false);
       resetItems();
-      clearLocalStorage();
+      await logout()
       handleCloseUserMenu();
       goToPage('login');
    };

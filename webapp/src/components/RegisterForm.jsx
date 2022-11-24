@@ -2,7 +2,6 @@ import useInput from '../hooks/useInput.js';
 import { useState } from 'react';
 import { TextField, Box } from '@mui/material';
 import registerUser from '../api/register.js';
-import { saveToLocalStorage } from '../api/localStorage.js';
 import LoadingButton from '@mui/lab/LoadingButton';
 
 const RegisterForm = (props) => {
@@ -64,7 +63,6 @@ const RegisterForm = (props) => {
       emailReset();
       passwordReset();
 
-      saveToLocalStorage({ token: response.meta.accessToken });
       setLoadingState(false);
       props.login(true);
       props.goToPage('todo-list');
