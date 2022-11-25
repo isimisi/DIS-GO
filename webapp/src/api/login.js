@@ -4,13 +4,13 @@ import { baseUrl } from './constants';
 export async function login(data) {
    const url = `${baseUrl}/login/`;
    const body = data;
+   console.log(url)
    try {
-      const { data: token } = await axios.post(url, body, {
+      const { data: user } = await axios.post(url, body, {
          withCredentials: true,
       });
-      return token;
+      return user;
    } catch (error) {
-      console.log(error);
       return {
          error: {
             message: error.response.data,
@@ -28,7 +28,6 @@ export async function logout() {
       });
       return token;
    } catch (error) {
-      console.log(error);
       return {
          error: {
             message: error.response.data,

@@ -1,5 +1,8 @@
 export const baseUrl =
-   window.location.hostname === '134.122.73.248'
-      ? 'http://159.89.8.171'
-      : 'http://localhost:3333';
+   process.env.NODE_ENV === 'production'
+      ? process.env.REACT_APP_PRODUCTION_API
+      : process.env.REACT_APP_HTTPS === 'true'
+      ? process.env.REACT_APP_DEVELOPMENT_API_HTTPS
+      : process.env.REACT_APP_DEVELOPMENT_API;
 
+console.log(baseUrl, process.env.REACT_APP_HTTPS);

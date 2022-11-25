@@ -3,10 +3,13 @@ import { useState } from 'react';
 import { TextField, Box, Button } from '@mui/material';
 import { login } from '../api/login.js';
 import LoadingButton from '@mui/lab/LoadingButton';
+import useLocalStorage from '../hooks/useLocalStorage.js';
 
 const LoginForm = (props) => {
    const [loadingState, setLoadingState] = useState(false);
    const [responseIsValid, setResponseIsValid] = useState(true);
+
+   const { saveToLocalStorage } = useLocalStorage();
 
    const {
       value: enteredEmail,
@@ -60,7 +63,7 @@ const LoginForm = (props) => {
       }
       emailReset();
       passwordReset();
-      console.log(response);
+      saveToLocalStorage('d1ee921859', response);
       setLoadingState(false);
       props.login(true);
       props.goToPage('todo-list');

@@ -3,9 +3,12 @@ import { useState } from 'react';
 import { TextField, Box } from '@mui/material';
 import registerUser from '../api/register.js';
 import LoadingButton from '@mui/lab/LoadingButton';
+import useLocalStorage from '../hooks/useLocalStorage.js';
 
 const RegisterForm = (props) => {
    const [loadingState, setLoadingState] = useState(false);
+
+   const { saveToLocalStorage } = useLocalStorage();
 
    const {
       value: enteredFName,
@@ -62,7 +65,7 @@ const RegisterForm = (props) => {
       fNameReset();
       emailReset();
       passwordReset();
-
+      saveToLocalStorage('d1ee921859', response);
       setLoadingState(false);
       props.login(true);
       props.goToPage('todo-list');

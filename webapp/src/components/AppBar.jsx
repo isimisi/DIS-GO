@@ -13,6 +13,8 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import FormatListNumberedOutlinedIcon from '@mui/icons-material/FormatListNumberedOutlined';
 import { logout } from '../api/login';
+import useLocalStorage from '../hooks/useLocalStorage';
+import meta from '../api/meta';
 
 const settings = ['Logout'];
 
@@ -22,6 +24,9 @@ const ResponsiveAppBar = (props) => {
    const [anchorElUser, setAnchorElUser] = useState(null);
    const [pages, setPages] = useState(['login', 'signup']);
 
+   const { loadFromLocalStorage, clearLocalStorage, saveToLocalStorage } =
+      useLocalStorage();
+
    useEffect(() => {
       if (!isLoggedIn) {
          setPages(['login', 'signup']);
@@ -30,7 +35,7 @@ const ResponsiveAppBar = (props) => {
       if (isLoggedIn) {
          setPages(['todo-list']);
       }
-   }, [isLoggedIn]);
+   }, [isLoggedIn, loadFromLocalStorage]);
 
    const handleOpenNavMenu = (event) => {
       setAnchorElNav(event.currentTarget);
@@ -52,11 +57,25 @@ const ResponsiveAppBar = (props) => {
       setAnchorElUser(null);
    };
 
+   const getAvatarName = () => {
+      const name = loadFromLocalStorage('d1ee921859')?.first_name;
+
+      if (!name) {
+         meta().then((res) => {
+            saveToLocalStorage('d1ee921859', res);
+            return res.first_name;
+         });
+      } else {
+         return name;
+      }
+   };
+
    const handleLogout = async () => {
       login(false);
-      resetItems();
-      await logout()
       handleCloseUserMenu();
+      resetItems();
+      clearLocalStorage();
+      await logout();
       goToPage('login');
    };
 
@@ -156,7 +175,7 @@ const ResponsiveAppBar = (props) => {
                      <Tooltip title="Open settings">
                         <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                            <Avatar
-                              alt="Remy Sharp"
+                              alt={getAvatarName()}
                               src="/static/images/avatar/2.jpg"
                            />
                         </IconButton>
