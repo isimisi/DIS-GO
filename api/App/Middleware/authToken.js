@@ -3,7 +3,10 @@ import Env from '../../config/Env.js';
 import User from '../Models/User.js';
 
 export default function authToken(request, response, next) {
-   const authHeader = request.headers['authorization'];
+   const authHeader = request.session.authorization;
+
+   if (!authHeader) return response.status(401).send('Unauthorized');
+
    const [, token] = authHeader && authHeader.split(' ');
    if (token == null) return response.status(401).send('Unauthorized');
    return new Promise((resolve, reject) => {

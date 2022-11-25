@@ -3,6 +3,9 @@ import Todo from '../Models/Todo.js';
 export default class TodoController {
    static async index(request, response) {
       const user = request.user;
+
+      if (!user) return response.sendStatus(403);
+
       try {
          const todos = await Todo.allUserTodos(user.id);
          response.json(todos);

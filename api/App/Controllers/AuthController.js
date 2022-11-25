@@ -22,7 +22,12 @@ export default class AuthController {
             { email: user.email },
             access_token_secret
          );
-         response.json({ accessToken });
+
+         request.session.authorization = 'Bearer ' + accessToken;
+
+         delete user.password;
+
+         response.json(user);
       } catch (error) {
          response.sendStatus(501);
       }
@@ -56,10 +61,28 @@ export default class AuthController {
             access_token_secret
          );
          delete user.password;
-         user.meta = { accessToken };
+         request.session.authorization = 'Bearer ' + accessToken;
          response.json(user);
       } catch (error) {
          response.status(500).send(error);
       }
+   }
+
+   static async logout(request, response) {
+      try {
+         request.session.destroy();
+         response.send('ok');
+      } catch (error) {
+         response.status(500).send(error);
+      }
+   }
+
+   static async meta(request, response) {
+      if (!request.user)
+         return response.status(401).send('user needs to login again');
+      const user = { ...request.user };
+      delete user.password;
+
+      return response.json(user);
    }
 }
