@@ -8,5 +8,6 @@ export default class Users extends DatabaseBuilder {
       first_name: 'TEXT NOT NULL',
       password: 'TEXT NOT NULL',
       email: 'TEXT NOT NULL UNIQUE',
+      verified: 'INTEGER'
    };
 }

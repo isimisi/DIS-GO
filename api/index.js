@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import session from 'express-session';
 import { createServer } from 'https';
+import { createServer as httpCreate } from 'http';
 
 import corsConfig from '#config/Cors';
 import sessionConfig from '#config/Session';
@@ -13,6 +14,7 @@ import startupMsg from './utils/cli-box.js';
 import userRouter from './routes/user.js';
 import authRouter from './routes/auth.js';
 import todoRouter from './routes/todo.js';
+import Mail from './App/Services/MailService.js';
 
 const port = Env.get('PORT');
 const httpsPort = Env.get('HTTPS_PORT');
@@ -26,6 +28,7 @@ redirectServer.all('*', (request, response) => {
 });
 
 app.use(cors(corsConfig));
+app.set('trust proxy', 1);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -38,12 +41,29 @@ app.get('/', function (req, res) {
    );
 });
 
+app.post('/mail', async function (request, response) {
+   const { subject, text } = request.body;
+
+   try {
+      await Mail.verificationMail(
+         { first_name: 'Isaac', email: 'isaacj.ahmad@gmail.com' },
+         5685
+      );
+      response.send('ok');
+   } catch (error) {
+      console.log(error);
+      response.status(404).send('err');
+   }
+});
+
 app.use('/users', userRouter);
 app.use('/todos', todoRouter);
 app.use('/', authRouter);
 
-redirectServer.listen(port);
+// redirectServer.listen(port);
 
-createServer(httpsOptions, app).listen(httpsPort, function () {
-   console.log(startupMsg);
-});
+app.listen(3333, () => console.log('listening on port 3333'));
+
+// createServer(httpsOptions, app).listen(httpsPort, function () {
+//    console.log(startupMsg);
+// });

@@ -4,7 +4,6 @@ import { baseUrl } from './constants';
 export async function login(data) {
    const url = `${baseUrl}/login/`;
    const body = data;
-   console.log(url)
    try {
       const { data: user } = await axios.post(url, body, {
          withCredentials: true,

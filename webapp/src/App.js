@@ -4,12 +4,13 @@ import RegisterForm from './components/RegisterForm';
 import ResponsiveAppBar from './components/AppBar';
 import LoaderSpinner from './components/LoaderSpinner';
 import LoginForm from './components/LoginForm';
+import VerifyUser from './components/VerifyUser';
 import { useEffect } from 'react';
 import { fetchTodos } from './api/todos';
 import Todo from './components/Todo';
 
 function App() {
-   const [pageState, setPageState] = useState('todo-list');
+   const [pageState, setPageState] = useState('login');
    const [loadingState, setLoadingState] = useState(true);
    const [itemsState, setItemsState] = useState([]);
    const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -58,6 +59,7 @@ function App() {
                setIsLoggedIn(false);
                return;
             }
+            setPageState('todo-list');
             setItemsState(res);
             setIsLoggedIn(true);
          })
@@ -71,11 +73,7 @@ function App() {
    ) : (
       <>
          {pageState === 'signup' && (
-            <RegisterForm
-               goToPage={handleGoToPage}
-               loading={loadingHandler}
-               login={loginHandler}
-            />
+            <RegisterForm goToPage={handleGoToPage} loading={loadingHandler} />
          )}
          {pageState === 'login' && (
             <LoginForm
@@ -90,6 +88,9 @@ function App() {
                addItems={addItemsHandler}
                removeItem={deleteItemHandler}
             />
+         )}
+         {pageState === 'verification' && (
+            <VerifyUser goToPage={handleGoToPage} login={loginHandler} />
          )}
       </>
    );

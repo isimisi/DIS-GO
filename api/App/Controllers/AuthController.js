@@ -2,6 +2,7 @@ import jwt from 'jsonwebtoken';
 import Env from '../../config/Env.js';
 import User from '../Models/User.js';
 import Hash from '../Services/Hash.js';
+import Mail from '../Services/MailService2.js';
 
 export default class AuthController {
    static async login(request, response) {
@@ -16,6 +17,9 @@ export default class AuthController {
          if (!verifyPassword)
             return response.status(403).send('incorrect email or password');
 
+         if (!user.verified)
+            return response.status(404).send('user not verified');
+
          const access_token_secret = Env.get('ACCESS_TOKEN_SECRET');
 
          const accessToken = jwt.sign(
@@ -24,7 +28,7 @@ export default class AuthController {
          );
 
          request.session.authorization = 'Bearer ' + accessToken;
-
+         request.session.save();
          delete user.password;
 
          response.json(user);
@@ -52,18 +56,24 @@ export default class AuthController {
             first_name,
             password,
             email: email.toLowerCase(),
+            verified: 0,
          });
          const [user] = await User.find(id);
-         const access_token_secret = Env.get('ACCESS_TOKEN_SECRET');
 
-         const accessToken = jwt.sign(
-            { email: user.email },
-            access_token_secret
-         );
          delete user.password;
-         request.session.authorization = 'Bearer ' + accessToken;
+
+         const code = Math.floor(1000 + Math.random() * 9000);
+         request.session.code = { code, id };
+
+         try {
+            await Mail.verificationMail(user, code);
+         } catch (error) {
+            console.log(error);
+         }
+
          response.json(user);
       } catch (error) {
+         console.log(error);
          response.status(500).send(error);
       }
    }
@@ -84,5 +94,42 @@ export default class AuthController {
       delete user.password;
 
       return response.json(user);
+   }
+
+   static async verify(request, response) {
+      const { code } = request.body;
+
+      if (+code === +request.session.code.code) {
+         const [user] = await User.find(request.session.code.id);
+
+         try {
+            await User.update(
+               {
+                  first_name: user.first_name,
+                  email: user.email,
+                  password: user.password,
+                  verified: 1,
+               },
+               request.session.code.id
+            );
+         } catch (error) {
+            console.log(error);
+         }
+
+         delete request.session.code;
+
+         const access_token_secret = Env.get('ACCESS_TOKEN_SECRET');
+
+         const accessToken = jwt.sign(
+            { email: user.email },
+            access_token_secret
+         );
+
+         request.session.authorization = 'Bearer ' + accessToken;
+         request.session.save();
+         return response.send('user is verified');
+      } else {
+         return response.status(403).send('Incorrect code');
+      }
    }
 }

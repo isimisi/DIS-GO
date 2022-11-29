@@ -5,4 +5,4 @@ export const baseUrl =
       ? process.env.REACT_APP_DEVELOPMENT_API_HTTPS
       : process.env.REACT_APP_DEVELOPMENT_API;
 
-console.log(baseUrl, process.env.REACT_APP_HTTPS);
+

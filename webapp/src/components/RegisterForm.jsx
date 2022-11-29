@@ -1,7 +1,7 @@
 import useInput from '../hooks/useInput.js';
 import { useState } from 'react';
 import { TextField, Box } from '@mui/material';
-import registerUser from '../api/register.js';
+import { registerUser } from '../api/register.js';
 import LoadingButton from '@mui/lab/LoadingButton';
 import useLocalStorage from '../hooks/useLocalStorage.js';
 
@@ -67,8 +67,7 @@ const RegisterForm = (props) => {
       passwordReset();
       saveToLocalStorage('d1ee921859', response);
       setLoadingState(false);
-      props.login(true);
-      props.goToPage('todo-list');
+      props.goToPage('verification');
    };
 
    return (

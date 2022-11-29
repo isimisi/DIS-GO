@@ -4,7 +4,7 @@ import User from '../Models/User.js';
 
 export default function authToken(request, response, next) {
    const authHeader = request.session.authorization;
-
+   console.log(request.session);
    if (!authHeader) return response.status(401).send('Unauthorized');
 
    const [, token] = authHeader && authHeader.split(' ');
@@ -15,6 +15,7 @@ export default function authToken(request, response, next) {
          try {
             const [user] = await User.where('email = ?', data.email);
             request.user = user;
+            if (!user.verified) reject('needs verification');
             resolve();
          } catch (error) {
             reject(error);
@@ -22,5 +23,5 @@ export default function authToken(request, response, next) {
       });
    })
       .then(() => next())
-      .catch(() => response.status(403).send('Forbidden'));
+      .catch((e) => response.status(403).send(e));
 }

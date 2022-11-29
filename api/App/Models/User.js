@@ -4,7 +4,7 @@ import Hash from '../Services/Hash.js';
 export default class User extends BaseModel {
    static tableName = 'users';
 
-   static columns = ['first_name', 'password', 'email'];
+   static columns = ['first_name', 'password', 'email', 'verified'];
 
    /**
     *

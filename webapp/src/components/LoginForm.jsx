@@ -66,6 +66,9 @@ const LoginForm = (props) => {
       saveToLocalStorage('d1ee921859', response);
       setLoadingState(false);
       props.login(true);
+      if (!response.verified) {
+         return props.goToPage('verification')
+      }
       props.goToPage('todo-list');
    };
 

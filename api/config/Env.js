@@ -15,7 +15,7 @@ export default class Env {
    static get(string) {
       const env = process.env[string];
 
-      if (!env) throw new Error('Env-variable does not exist in .env');
+      if (!env) throw new Error(`${string} does not exist in .env`);
 
       return env;
    }
