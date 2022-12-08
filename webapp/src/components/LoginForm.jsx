@@ -53,23 +53,24 @@ const LoginForm = (props) => {
          email: enteredEmail,
       };
 
-      const response = await login(data);
-
-      if (response.error) {
+      try {
+         const response = await login(data);
+         emailReset();
+         passwordReset();
+         saveToLocalStorage('d1ee921859', response);
+         setLoadingState(false);
+         if (!response.verified) {
+            props.login(false);
+            return props.goToPage('verification');
+         }
+         props.login(true);
+         props.goToPage('todo-list');
+      } catch (error) {
          setResponseIsValid(false);
          setLoadingState(false);
          passwordReset();
          return;
       }
-      emailReset();
-      passwordReset();
-      saveToLocalStorage('d1ee921859', response);
-      setLoadingState(false);
-      props.login(true);
-      if (!response.verified) {
-         return props.goToPage('verification')
-      }
-      props.goToPage('todo-list');
    };
 
    return (

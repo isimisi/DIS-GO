@@ -14,7 +14,7 @@ import startupMsg from './utils/cli-box.js';
 import userRouter from './routes/user.js';
 import authRouter from './routes/auth.js';
 import todoRouter from './routes/todo.js';
-import Mail from './App/Services/MailService.js';
+import Mail from './App/Services/MailService(deprecated).js';
 
 const port = Env.get('PORT');
 const httpsPort = Env.get('HTTPS_PORT');
@@ -34,6 +34,15 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(session(sessionConfig));
+
+app.use(function(req, res, next) {
+
+   res.header('Access-Control-Allow-Credentials', true);
+   res.header('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE');
+   // res.header("Access-Control-Allow-Origin", process.env.ORIGIN);
+   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-   Type, Accept, Authorization");
+   next();
+   });
 
 app.get('/', function (req, res) {
    res.send(

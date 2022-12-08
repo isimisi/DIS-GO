@@ -3,7 +3,11 @@ import useLocalStorage from '../../hooks/useLocalStorage';
 import LoadingButton from '@mui/lab/LoadingButton';
 import AuthCode from 'react-auth-code-input';
 import classes from './style.module.css';
-import { verification } from '../../api/register';
+import { sendVerification, verification } from '../../api/register';
+import {
+   showErrorMessage,
+   showSuccessMessage,
+} from '../../helpers/exceptionUtils';
 
 const VerifyUser = (props) => {
    const [loadingState, setLoadingState] = useState(false);
@@ -12,7 +16,7 @@ const VerifyUser = (props) => {
    const [codeState, setCodeState] = useState(null);
    const [errorState, setErrorState] = useState(false);
 
-   const { loadFromLocalStorage } = useLocalStorage();
+   const { loadFromLocalStorage, saveToLocalStorage } = useLocalStorage();
 
    useEffect(() => {
       const email = loadFromLocalStorage('d1ee921859').email;
@@ -23,7 +27,7 @@ const VerifyUser = (props) => {
       const stars = Array(emailName.length).fill('*').join('');
 
       setEmailState(`${firstLetter}${stars}${lastLetter}@${domain}`);
-   }, []);
+   }, [loadFromLocalStorage]);
 
    const handleOnChange = (code) => {
       setErrorState(false);
@@ -43,15 +47,28 @@ const VerifyUser = (props) => {
 
       setLoadingState(true);
       try {
-         await verification(codeState);
+         const data = await verification(codeState);
+         saveToLocalStorage('d1ee921859', data);
+         setLoadingState(false);
+         props.login(true);
+         props.goToPage('todo-list');
       } catch (error) {
          setErrorState(true);
+         props.login(false);
          setLoadingState(false);
          return;
       }
-      setLoadingState(false);
-      props.goToPage('todo-list');
-      props.login(true);
+   };
+
+   const handleNewVerifcationCode = async (e) => {
+      e.preventDefault();
+      try {
+         const { id } = loadFromLocalStorage('d1ee921859');
+         await sendVerification(id);
+         showSuccessMessage('Success', 'A new email has been sent', 3000);
+      } catch (error) {
+         showErrorMessage('Error', 'Oops.. something went wrong');
+      }
    };
 
    return (
@@ -80,11 +97,16 @@ const VerifyUser = (props) => {
                Verify
             </LoadingButton>
             <br />
-            <a href="#" className={classes.anchor}>
-               Didn't get a verification code?
+            <a
+               href="/"
+               className={classes.anchor}
+               onClick={handleNewVerifcationCode}>
+               Resend verification mail
             </a>
+            <p className={classes.spamHelper}>
+               Please make sure to look in your spam folder
+            </p>
          </form>
-         {errorState && <div>error</div>}
       </>
    );
 };

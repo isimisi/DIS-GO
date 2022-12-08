@@ -4,7 +4,7 @@ import session from 'express-session';
 import SqliteStore from 'better-sqlite3-session-store';
 
 const Store = SqliteStore(session);
-const db = new sqlite('./tmp/session.db', { verbose: console.log });
+const db = new sqlite('./tmp/session.db');
 
 export default {
    secret: Env.get('SESSION_TOKEN_SECRET'),
@@ -19,7 +19,8 @@ export default {
    saveUninitialized: true,
    cookie: {
       httpOnly: true,
-      secure: Env.get('NODE_ENV') === 'production',
-      sameSite: false,
+      secure: false,
+      // sameSite: 'none',
+      maxAge: 10*24*60*60*1000
    },
 };

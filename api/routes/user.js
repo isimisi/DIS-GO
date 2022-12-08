@@ -1,11 +1,11 @@
 import express from 'express';
 import UserController from '../App/Controllers/UserController.js';
-import authToken from '../App/Middleware/authToken.js';
+import authPath from '../App/Middleware/authPath.js';
 
 const userRouter = express.Router();
 
-userRouter.get('/:id', authToken, UserController.show);
-userRouter.put('/:id', authToken, UserController.update);
-userRouter.delete('/:id', authToken, UserController.remove);
+userRouter.get('/:id', authPath, UserController.show);
+userRouter.put('/:id', authPath, UserController.update);
+userRouter.delete('/:id', authPath, UserController.remove);
 
 export default userRouter;

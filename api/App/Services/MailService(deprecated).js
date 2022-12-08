@@ -1,46 +1,35 @@
-import mailgun from 'mailgun-js';
+import nodemailer from 'nodemailer';
 import mailConfig from '#config/mail';
+import Env from '#config/Env';
 import fs from 'fs/promises';
 import path from 'path';
 import Handlebars from 'handlebars';
 import * as url from 'url';
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 
-const mg = mailgun(mailConfig);
-
+/**
+ * @deprecated see MailService.js
+ */
 export default class Mail {
+   static transporter = nodemailer.createTransport(mailConfig);
+
    static name = 'Do Not Reply';
-   static email = 'postmaster@isimisi.live';
 
    static async sendHtml(subject, html, ...recievers) {
-      const data = {
-         from: `${this.name} 🦍 <${this.email}>`,
+      await this.transporter.sendMail({
+         from: `${this.name} 🦍 <${mailConfig.auth.user}>`,
          to: `${recievers.join(', ')}`,
          subject,
          html,
-      };
-
-      return new Promise((resolve, reject) => {
-         mg.messages().send(data, function (error, body) {
-            if (error) return reject(error);
-            resolve(body);
-         });
       });
    }
 
    static async sendText(subject, text, ...recievers) {
-      const data = {
-         from: `${this.name} 🦍 <${this.email}>`,
+      await this.transporter.sendMail({
+         from: `${this.name} 🦍 <${mailConfig.auth.user}>`,
          to: `${recievers.join(', ')}`,
          subject,
          text,
-      };
-
-      return new Promise((resolve, reject) => {
-         mg.messages().send(data, function (error, body) {
-            if (error) return reject(error);
-            resolve(body);
-         });
       });
    }
 

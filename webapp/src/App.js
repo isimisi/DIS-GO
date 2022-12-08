@@ -54,15 +54,16 @@ function App() {
    useEffect(() => {
       fetchTodos()
          .then((res) => {
-            if (res.error) {
-               setPageState('login');
-               setIsLoggedIn(false);
-               return;
-            }
             setPageState('todo-list');
             setItemsState(res);
             setIsLoggedIn(true);
          })
+         .catch(() => {
+            setPageState('login');
+            setIsLoggedIn(false);
+            return;
+         })
+
          .finally(() => {
             setLoadingState(false);
          });

@@ -57,17 +57,17 @@ const RegisterForm = (props) => {
          email: enteredEmail,
       };
 
-      const response = await registerUser(data);
-      if (response.error) {
-         return;
+      try {
+         const response = await registerUser(data);
+         fNameReset();
+         emailReset();
+         passwordReset();
+         saveToLocalStorage('d1ee921859', response);
+         setLoadingState(false);
+         props.goToPage('verification');
+      } catch (error) {
+         console.log('do something');
       }
-
-      fNameReset();
-      emailReset();
-      passwordReset();
-      saveToLocalStorage('d1ee921859', response);
-      setLoadingState(false);
-      props.goToPage('verification');
    };
 
    return (

@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken';
 import Env from '../../config/Env.js';
 import User from '../Models/User.js';
 import Hash from '../Services/Hash.js';
-import Mail from '../Services/MailService2.js';
+import Mail from '../Services/MailService.js';
 
 export default class AuthController {
    static async login(request, response) {
@@ -17,19 +17,15 @@ export default class AuthController {
          if (!verifyPassword)
             return response.status(403).send('incorrect email or password');
 
-         if (!user.verified)
-            return response.status(404).send('user not verified');
+         if (!Boolean(user.verified)) {
+            console.log(user.verified);
+            return response.redirect('/sendVerification?' + `id=${user.id}`);
+         }
 
-         const access_token_secret = Env.get('ACCESS_TOKEN_SECRET');
-
-         const accessToken = jwt.sign(
-            { email: user.email },
-            access_token_secret
-         );
-
-         request.session.authorization = 'Bearer ' + accessToken;
-         request.session.save();
          delete user.password;
+
+         request.session.user = user;
+         request.session.save();
 
          response.json(user);
       } catch (error) {
@@ -62,16 +58,9 @@ export default class AuthController {
 
          delete user.password;
 
-         const code = Math.floor(1000 + Math.random() * 9000);
-         request.session.code = { code, id };
+         const query = `id=${id}`;
 
-         try {
-            await Mail.verificationMail(user, code);
-         } catch (error) {
-            console.log(error);
-         }
-
-         response.json(user);
+         response.redirect('/sendVerification?' + query);
       } catch (error) {
          console.log(error);
          response.status(500).send(error);
@@ -96,11 +85,30 @@ export default class AuthController {
       return response.json(user);
    }
 
-   static async verify(request, response) {
-      const { code } = request.body;
+   static async sendVerfication(request, response) {
+      const { id } = request.query;
+      const code = Math.floor(1000 + Math.random() * 9000);
+      request.session.verification = { code, id };
+      const [user] = await User.find(id);
 
-      if (+code === +request.session.code.code) {
-         const [user] = await User.find(request.session.code.id);
+      if (!user) return response.status(400).send('User not found');
+
+      try {
+         await Mail.verificationMail(user, code);
+      } catch (error) {
+         console.log(error);
+         return response.status(500).send('Internal Server Error');
+      }
+
+      response.send({ id: user.id, email: user.email, verified: false });
+   }
+
+   static async verify(request, response) {
+      const code = request.body.code;
+
+      if (+code === +request.session.verification.code) {
+         const [user] = await User.find(request.session.verification.id);
+         user.verified = 1;
 
          try {
             await User.update(
@@ -108,26 +116,23 @@ export default class AuthController {
                   first_name: user.first_name,
                   email: user.email,
                   password: user.password,
-                  verified: 1,
+                  verified: user.verified,
                },
-               request.session.code.id
+               request.session.verification.id
             );
          } catch (error) {
             console.log(error);
+            return response.sendStatus(500);
          }
 
-         delete request.session.code;
+         delete request.session.verification;
 
-         const access_token_secret = Env.get('ACCESS_TOKEN_SECRET');
-
-         const accessToken = jwt.sign(
-            { email: user.email },
-            access_token_secret
-         );
-
-         request.session.authorization = 'Bearer ' + accessToken;
+         request.session.user = user;
          request.session.save();
-         return response.send('user is verified');
+
+         delete user.password;
+
+         return response.send(user);
       } else {
          return response.status(403).send('Incorrect code');
       }
