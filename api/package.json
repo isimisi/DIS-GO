@@ -7,7 +7,9 @@
       "dev": "nodemon index.js",
       "start": "node index.js",
       "test": "echo \"Error: no test specified\" && exit 1",
-      "migrations": "node ./database/run-migrations.js"
+      "migration": "node ./database/run-migrations.js",
+      "migration:drop": "node ./database/run-dropMigrations.js",
+      "migration:refresh": "npm run migration:drop && npm run migration"
    },
    "keywords": [],
    "author": "",

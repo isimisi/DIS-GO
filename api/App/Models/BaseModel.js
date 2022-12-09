@@ -15,6 +15,11 @@ export default class BaseModel {
       });
    }
 
+   /**
+    *
+    * @param {number} id
+    * @returns
+    */
    static find(id) {
       return new Promise((resolve, reject) => {
          const sql = `SELECT * FROM ${this.tableName} WHERE id = ?`;
@@ -27,10 +32,16 @@ export default class BaseModel {
 
    static where(query, ...args) {
       return new Promise((resolve, reject) => {
-         const sql = `SELECT * FROM ${this.tableName} WHERE ${query}`;
-         database.all(sql, [args], function (error, rows) {
+         let sql = `SELECT * FROM ${this.tableName} WHERE `;
+         const values = [];
+         Object.entries(data).forEach(([key, value], i, array) => {
+            sql += `${key} = ? `;
+            if (i !== array.length - 1) sql += 'AND WHERE ';
+            values.push(value);
+         });
+         database.run(sql, values, function (error) {
             if (error) return reject(error);
-            resolve(rows);
+            resolve();
          });
       });
    }
@@ -44,24 +55,27 @@ export default class BaseModel {
       let sql = `INSERT INTO ${this.tableName}(`;
       this.columns.forEach((column, index, array) => {
          sql += column;
-
-         if (index !== array.length - 1) sql += ',';
+         sql += ',';
       });
-      sql += ') VALUES (';
+      sql += ' datetime) VALUES (';
 
       this.columns.forEach((column, index, array) => {
          sql += '?';
 
-         if (index !== array.length - 1) sql += ',';
+         sql += ',';
       });
 
-      sql += ')';
+      sql += ' ?)';
 
       return new Promise((resolve, reject) => {
-         database.run(sql, Object.values(data), function (error) {
-            if (error) return reject(error);
-            resolve(this.lastID);
-         });
+         database.run(
+            sql,
+            [...Object.values(data), new Date().valueOf()],
+            function (error) {
+               if (error) return reject(error);
+               resolve(this.lastID);
+            }
+         );
       });
    }
 
@@ -106,6 +120,27 @@ export default class BaseModel {
          database.all(sql, [], function (error, rows) {
             if (error) return reject(error);
             resolve(rows);
+         });
+      });
+   }
+
+   /**
+    *
+    * @param {{ key: value }} data
+    * @returns {Promise<void>}
+    */
+   static removeWhere(data) {
+      return new Promise((resolve, reject) => {
+         let sql = `DELETE FROM ${this.tableName} WHERE `;
+         const values = [];
+         Object.entries(data).forEach(([key, value], i, array) => {
+            sql += `${key} = ? `;
+            if (i !== array.length - 1) sql += 'AND WHERE ';
+            values.push(value);
+         });
+         database.run(sql, values, function (error) {
+            if (error) return reject(error);
+            resolve();
          });
       });
    }

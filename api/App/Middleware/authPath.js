@@ -8,7 +8,7 @@ export default function authToken(request, response, next) {
    if (!Boolean(user.verified))
       return response.status(401).send('User needs verification');
 
-   request.user = user;
+   request.user = { ...user };
 
    next();
 }

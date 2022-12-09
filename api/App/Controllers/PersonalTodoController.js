@@ -1,11 +1,13 @@
-import Todo from '../Models/Todo.js';
+import PersonalTodo from '../Models/PersonalTodo.js';
 
 export default class TodoController {
    static async index(request, response) {
-      const list_id = request.todoList.id;
+      const user = request.user;
+
+      if (!user) return response.sendStatus(403);
 
       try {
-         const todos = await Todo.allListTodos(list_id);
+         const todos = await PersonalTodo.allUserTodos(user.id);
          response.json(todos);
       } catch (error) {
          console.log(error);
@@ -17,7 +19,7 @@ export default class TodoController {
       const { id } = request.params;
 
       try {
-         const [todo] = await Todo.find(id);
+         const [todo] = await PersonalTodo.find(id);
          response.json(todo);
       } catch (error) {
          response.status(501).json(error);
@@ -26,15 +28,16 @@ export default class TodoController {
 
    static async create(request, response) {
       const { todo_text } = request.body;
-      todoList = request.todoList;
+      const user = request.user;
 
       try {
-         const id = await Todo.create({
-            list_id: todoList.id,
+         const id = await PersonalTodo.create({
+            user_id: user.id,
             todo_text,
+            is_done: 0,
          });
 
-         const [todo] = await Todo.find(id);
+         const [todo] = await PersonalTodo.find(id);
 
          response.json(todo);
       } catch (error) {
@@ -47,12 +50,12 @@ export default class TodoController {
       const { todo_text, is_done } = request.body;
 
       try {
-         const [todo] = await Todo.find(id);
+         const [todo] = await PersonalTodo.find(id);
 
          todo.todo_text = todo_text || todo.todo_text;
          todo.is_done = is_done != undefined ? is_done : todo.is_done;
 
-         await Todo.update(todo, id);
+         await PersonalTodo.update(todo, id);
          response.json(todo);
       } catch (error) {
          console.log(error);
@@ -64,7 +67,7 @@ export default class TodoController {
       const { id } = request.params;
 
       try {
-         await Todo.remove(id);
+         await PersonalTodo.remove(id);
          response.json({ message: 'todo deleted' });
       } catch (error) {
          response.status(501).json(error);
