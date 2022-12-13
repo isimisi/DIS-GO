@@ -2,10 +2,7 @@ import * as React from 'react';
 import Box from '@mui/joy/Box';
 import List from '@mui/joy/List';
 import ListItem from '@mui/joy/ListItem';
-import ListItemDecorator from '@mui/joy/ListItemDecorator';
 import ListItemButton from '@mui/joy/ListItemButton';
-import Typography from '@mui/joy/Typography';
-import { CssVarsProvider } from '@mui/joy/styles';
 import FormatListNumberedIcon from '@mui/icons-material/FormatListNumbered';
 import { Divider } from '@mui/material';
 
