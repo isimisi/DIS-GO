@@ -1,14 +1,14 @@
 import express from 'express';
 import TodoController from '../App/Controllers/TodoController.js';
-import authPath from '../App/Middleware/authPath.js';
+import auth from '../App/Middleware/auth.js';
 
 const todoRouter = express.Router();
 
-todoRouter.get('/', authPath, TodoController.index);
-todoRouter.post('/', authPath, TodoController.create);
+todoRouter.get('/', auth, TodoController.index);
+todoRouter.post('/', auth, TodoController.create);
 
-todoRouter.get('/:id', authPath, TodoController.show);
-todoRouter.put('/:id', authPath, TodoController.update);
-todoRouter.delete('/:id', authPath, TodoController.remove);
+todoRouter.get('/:id', auth, TodoController.show);
+todoRouter.put('/:id', auth, TodoController.update);
+todoRouter.delete('/:id', auth, TodoController.remove);
 
 export default todoRouter;

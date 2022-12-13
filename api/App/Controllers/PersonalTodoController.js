@@ -1,17 +1,14 @@
 import PersonalTodo from '../Models/PersonalTodo.js';
 
-export default class TodoController {
+export default class PersonalTodoController {
    static async index(request, response) {
       const user = request.user;
-
-      if (!user) return response.sendStatus(403);
-
       try {
          const todos = await PersonalTodo.allUserTodos(user.id);
          response.json(todos);
       } catch (error) {
          console.log(error);
-         response.status(501).send(error);
+         response.status(500).send(error);
       }
    }
 

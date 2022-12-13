@@ -1,4 +1,4 @@
-export default function authToken(request, response, next) {
+export default function todoListPath(request, response, next) {
    const todoList = request.session.todoList;
 
    if (!todoList) return response.sendStatus(500);

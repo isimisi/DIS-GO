@@ -6,8 +6,9 @@ import LoaderSpinner from './components/LoaderSpinner';
 import LoginForm from './components/LoginForm';
 import VerifyUser from './components/VerifyUser';
 import { useEffect } from 'react';
-import { fetchTodos } from './api/todos';
+import { fetchTodos } from './api/personalTodos';
 import Todo from './components/Todo';
+import ListIndex from './components/ListOfSharedTodos';
 
 function App() {
    const [pageState, setPageState] = useState('login');
@@ -104,7 +105,7 @@ function App() {
             login={loginHandler}
             resetItems={resetItemsHandler}
          />
-         {content}
+         <ListIndex />
       </div>
    );
 }

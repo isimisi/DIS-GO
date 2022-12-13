@@ -1,7 +1,7 @@
 import React from 'react';
 import { TextField } from '@mui/material';
 import useInput from '../../hooks/useInput';
-import { createTodo } from '../../api/todos';
+import { createTodo } from '../../api/personalTodos';
 
 function TodoInput(props) {
    const {

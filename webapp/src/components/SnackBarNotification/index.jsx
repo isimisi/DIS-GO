@@ -7,7 +7,8 @@ export default function SnackBar(props) {
 
    useEffect(() => {
       beginCloseTimeout();
-   }, []);
+      // eslint-disable-next-line
+   }, []); 
 
    const closeSnackBar = () => {
       clearTimeout(closeTimeout);

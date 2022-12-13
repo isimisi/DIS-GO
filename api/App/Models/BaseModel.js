@@ -30,18 +30,19 @@ export default class BaseModel {
       });
    }
 
-   static where(query, ...args) {
+   static where(data) {
+      let sql = `SELECT * FROM ${this.tableName} WHERE `;
+      const values = [];
+      Object.entries(data).forEach(([key, value], i, array) => {
+         sql += `${key} = ? `;
+         if (i !== array.length - 1) sql += 'AND WHERE ';
+         values.push(value);
+      });
+
       return new Promise((resolve, reject) => {
-         let sql = `SELECT * FROM ${this.tableName} WHERE `;
-         const values = [];
-         Object.entries(data).forEach(([key, value], i, array) => {
-            sql += `${key} = ? `;
-            if (i !== array.length - 1) sql += 'AND WHERE ';
-            values.push(value);
-         });
-         database.run(sql, values, function (error) {
+         database.all(sql, values, function (error, rows) {
             if (error) return reject(error);
-            resolve();
+            resolve(rows);
          });
       });
    }

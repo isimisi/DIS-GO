@@ -13,7 +13,10 @@ import startupMsg from './utils/cli-box.js';
 
 import userRouter from './routes/user.js';
 import authRouter from './routes/auth.js';
+import todoListsRouter from './routes/todoLists.js';
+import personalTodoRouter from './routes/personalTodos.js';
 import todoRouter from './routes/todo.js';
+
 import Mail from './App/Services/MailService(deprecated).js';
 
 const port = Env.get('PORT');
@@ -35,14 +38,16 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(session(sessionConfig));
 
-app.use(function(req, res, next) {
-
+app.use(function (req, res, next) {
    res.header('Access-Control-Allow-Credentials', true);
    res.header('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE');
    // res.header("Access-Control-Allow-Origin", process.env.ORIGIN);
-   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-   Type, Accept, Authorization");
+   res.header(
+      'Access-Control-Allow-Headers',
+      'Origin, X-Requested-With, Content-   Type, Accept, Authorization'
+   );
    next();
-   });
+});
 
 app.get('/', function (req, res) {
    res.send(
@@ -65,9 +70,11 @@ app.post('/mail', async function (request, response) {
    }
 });
 
+app.use('/', authRouter);
 app.use('/users', userRouter);
 app.use('/todos', todoRouter);
-app.use('/', authRouter);
+app.use('/personaltodos', personalTodoRouter);
+app.use('/todolist', todoListsRouter);
 
 // redirectServer.listen(port);
 

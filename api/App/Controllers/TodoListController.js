@@ -45,27 +45,25 @@ export default class TodoListController {
       try {
          for (let i = 0; i < users.length; i++) {
             const user = users[i];
-            
+
             await UserTodoList.create({
                user_id: user.id,
                list_id: todoList.id,
             });
          }
          response.send('users added to list');
-      } catch (error) {
-
-      }
+      } catch (error) {}
    }
 
    static async update(request, response) {
       const todoList = request.todoList;
       const { title } = request.todoList;
 
-      const updatedList = { ...todoList, title };
+      todoList.title = title;
       try {
          await TodoList.update(updatedList, todoList.id);
-         request.session.todoList = updatedList;
-         return response.json(updatedList);
+         request.session.todoList = todoList;
+         return response.json(todoList);
       } catch (error) {
          return response.sendStatus(500);
       }

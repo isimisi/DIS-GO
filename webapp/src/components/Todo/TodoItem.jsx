@@ -4,10 +4,9 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Checkbox from '@mui/material/Checkbox';
-import { updateTodo } from '../../api/todos';
+import { updateTodo, removeTodo } from '../../api/personalTodos';
 import { IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { removeTodo } from '../../api/todos';
 
 export default function TodoItem(props) {
    const [checked, setChecked] = useState(false);
