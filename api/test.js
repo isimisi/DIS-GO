@@ -5,15 +5,13 @@ import database from './database/index.js';
 
 (async () => {
    try {
-      // console.log(
-      //    await User.create({
-      //       first_name: 'isaac',
-      //       password: 'nadejinn7',
-      //       email: 'isaacj.ahmad@gmail.com',
-      //    })
-      // );
-      const [user] = await User.find(1);
-      await User.update({ ...user, verified: 1 }, 1);
+      console.log(
+         await User.create({
+            first_name: 'test',
+            password: 'test',
+            email: 'is@test.com',
+         })
+      );
    } catch (error) {
       console.log(error);
    }

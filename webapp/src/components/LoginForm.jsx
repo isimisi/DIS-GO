@@ -4,6 +4,7 @@ import { TextField, Box, Button } from '@mui/material';
 import { login } from '../api/login.js';
 import LoadingButton from '@mui/lab/LoadingButton';
 import useLocalStorage from '../hooks/useLocalStorage.js';
+import { pages } from '../api/constants.js';
 
 const LoginForm = (props) => {
    const [loadingState, setLoadingState] = useState(false);
@@ -37,7 +38,7 @@ const LoginForm = (props) => {
 
    const handleGoToCreateAccount = (e) => {
       e.preventDefault();
-      props.goToPage('signup');
+      props.goToPage(pages.signup);
    };
 
    const formSubmissionHandler = async (e) => {
@@ -61,10 +62,10 @@ const LoginForm = (props) => {
          setLoadingState(false);
          if (!response.verified) {
             props.login(false);
-            return props.goToPage('verification');
+            return props.goToPage(pages.verification);
          }
          props.login(true);
-         props.goToPage('todo-list');
+         props.goToPage(pages.personalTodo);
       } catch (error) {
          setResponseIsValid(false);
          setLoadingState(false);

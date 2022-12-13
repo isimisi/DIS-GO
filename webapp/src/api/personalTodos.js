@@ -4,7 +4,6 @@ import { baseUrl } from './constants';
 export async function fetchTodos() {
    const url = `${baseUrl}/personaltodos`;
    const header = { withCredentials: true };
-   console.log(url);
    const { data: todos } = await axios.get(url, header);
    return todos;
 }

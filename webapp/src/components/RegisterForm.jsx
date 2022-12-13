@@ -4,6 +4,7 @@ import { TextField, Box } from '@mui/material';
 import { registerUser } from '../api/register.js';
 import LoadingButton from '@mui/lab/LoadingButton';
 import useLocalStorage from '../hooks/useLocalStorage.js';
+import { pages } from '../api/constants.js';
 
 const RegisterForm = (props) => {
    const [loadingState, setLoadingState] = useState(false);
@@ -64,7 +65,7 @@ const RegisterForm = (props) => {
          passwordReset();
          saveToLocalStorage('d1ee921859', response);
          setLoadingState(false);
-         props.goToPage('verification');
+         props.goToPage(pages.verification);
       } catch (error) {
          console.log('do something');
       }

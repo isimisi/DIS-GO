@@ -5,23 +5,19 @@ import ListItem from '@mui/joy/ListItem';
 import ListItemButton from '@mui/joy/ListItemButton';
 import FormatListNumberedIcon from '@mui/icons-material/FormatListNumbered';
 import { Divider } from '@mui/material';
-
-const listTest = [
-   'Isaac & Olivia',
-   'Isaac & Olivia',
-   'Arbejde',
-   'Oprydning',
-   'ferie',
-   'Arbejde',
-   'Oprydning',
-   'ferie',
-   'Isaac & Olivia',
-   'Arbejde',
-   'Oprydning',
-   'ferie',
-];
+import { fetchTodoLists } from '../../api/listOfSharedTodos';
 
 export default function ListOfLists() {
+   const [todoLists, setTodoLists] = React.useState([]);
+
+   React.useEffect(() => {
+      fetchTodoLists()
+         .then((res) => setTodoLists(res))
+         .catch((error) => {
+            console.log(error);
+         });
+   }, []);
+
    return (
       <Box
          sx={{
@@ -83,9 +79,9 @@ export default function ListOfLists() {
                   bgcolor: '#6BB2F590',
                }}
             />
-            {listTest.map((list) => {
+            {todoLists.map((list) => {
                return (
-                  <ListItem sx={{}}>
+                  <ListItem key={list.id}>
                      <ListItemButton
                         sx={{
                            display: 'flex',
@@ -101,7 +97,7 @@ export default function ListOfLists() {
                               bgcolor: '#12375A50',
                            },
                         }}>
-                        {list}
+                        {list.title}
                      </ListItemButton>
                   </ListItem>
                );

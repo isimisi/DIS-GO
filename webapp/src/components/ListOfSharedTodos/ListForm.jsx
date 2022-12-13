@@ -8,39 +8,62 @@ import { Box } from '@mui/material';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import Loader from './Loader';
 import Button from '@mui/joy/Button';
-
-const people = ['pee', 'poo'];
-
-function sleep(delay = 0) {
-   return new Promise((resolve) => {
-      setTimeout(resolve, delay);
-   });
-}
+import useInput from '../../hooks/useInput';
+import { createTodoList, searchMail } from '../../api/listOfSharedTodos';
+import TextField from '@mui/joy/TextField';
 
 export default function ListForm() {
    const [open, setOpen] = React.useState(false);
    const [options, setOptions] = React.useState([]);
-   const loading = open && options.length === 0;
+   const [loading, setLoading] = React.useState(false);
+
+   const {
+      value: searchTerm,
+      isValid: searchTermIsValid,
+      hasError: searchTermHasError,
+      valueChangeHandler: searchTermChangeHandler,
+      reset: searchTermReset,
+   } = useInput();
+
+   const {
+      value: title,
+      isValid: titleIsValid,
+      hasError: titleHasError,
+      valueChangeHandler: titleChangeHandler,
+      inputBlurHandler: titleBlurHandler,
+      reset: titleReset,
+   } = useInput();
+
+   const {
+      value: users,
+      isValid: usersIsValid,
+      hasError: usersHasError,
+      valueChangeHandler: usersChangeHandler,
+      inputBlurHandler: usersBlurHandler,
+      reset: usersReset,
+   } = useInput((emails) => emails.length > 0);
 
    React.useEffect(() => {
-      let active = true;
+      if (searchTermIsValid) {
+         (async () => {
+            setLoading(true);
+            try {
+               const emails = await searchMail(searchTerm);
 
-      if (!loading) {
-         return undefined;
+               setOptions(emails);
+               setLoading(false);
+            } catch (error) {
+               console.log(error);
+               setLoading(false);
+            }
+         })();
       }
 
-      (async () => {
-         await sleep(1e3); // For demo purposes.
-
-         if (active) {
-            setOptions([...people]);
-         }
-      })();
-
       return () => {
-         active = false;
+         searchTermReset();
       };
-   }, [loading]);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, [searchTerm, searchTermIsValid]);
 
    React.useEffect(() => {
       if (!open) {
@@ -48,8 +71,29 @@ export default function ListForm() {
       }
    }, [open]);
 
+   function submitHandler(e) {
+      e.preventDefault();
+      if (titleHasError) return;
+      console.log(title, users);
+
+      (async () => {
+         try {
+            const response = await createTodoList(title, users);
+            titleReset();
+            usersReset();
+            console.log(response);
+         } catch (error) {
+            usersReset();
+            titleReset();
+            console.log(error);
+         }
+      })();
+   }
+
    return (
       <FormControl
+         component="form"
+         onSubmit={submitHandler}
          sx={{
             maxWidth: 900,
             margin: '1rem auto',
@@ -60,20 +104,27 @@ export default function ListForm() {
                marginBottom: '1rem',
             }}>
             <FormLabel
+               required
                sx={{
                   fontSize: 16,
                   color: '#002E94',
                }}>
                Title
             </FormLabel>
-            <Input
+            <TextField
                placeholder="Example Title"
+               required={true}
                sx={{
                   borderColor: '#E1CEB5',
                   ':active': {
                      borderColor: 'green',
                   },
                }}
+               onChange={titleChangeHandler}
+               onBlur={titleBlurHandler}
+               value={title}
+               error={titleHasError}
+               helperText={titleHasError && 'This field cannot be left empty.'}
             />
          </Box>
          <Box
@@ -110,7 +161,15 @@ export default function ListForm() {
                      }}
                   />
                }
+               limitTags={3}
                endDecorator={loading ? <Loader /> : null}
+               onKeyUp={searchTermChangeHandler}
+               onChange={(_e, value) => {
+                  const e = {};
+                  e.target = { value };
+                  usersChangeHandler(e);
+               }}
+               onBlur={usersBlurHandler}
             />
             <FormHelperText>
                People you want to share the todo list with.
@@ -118,9 +177,8 @@ export default function ListForm() {
          </Box>
          <Box>
             <Button
-               onClick={function (e) {
-                  console.log(e);
-               }}
+               onClick={submitHandler}
+               type="submit"
                size="md"
                variant="soft"
                sx={{

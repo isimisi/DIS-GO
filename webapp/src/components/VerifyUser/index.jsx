@@ -8,6 +8,7 @@ import {
    showErrorMessage,
    showSuccessMessage,
 } from '../../helpers/exceptionUtils';
+import { pages } from '../../api/constants';
 
 const VerifyUser = (props) => {
    const [loadingState, setLoadingState] = useState(false);
@@ -51,7 +52,7 @@ const VerifyUser = (props) => {
          saveToLocalStorage('d1ee921859', data);
          setLoadingState(false);
          props.login(true);
-         props.goToPage('todo-list');
+         props.goToPage(pages.personalTodo);
       } catch (error) {
          setErrorState(true);
          props.login(false);

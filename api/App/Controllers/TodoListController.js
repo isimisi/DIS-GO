@@ -1,4 +1,5 @@
 import TodoList from '../Models/TodoList.js';
+import User from '../Models/User.js';
 import UserTodoList from '../Models/UserTodoList.js';
 
 export default class TodoListController {
@@ -28,12 +29,27 @@ export default class TodoListController {
 
    static async create(request, response) {
       const user = request.user;
-      const { title } = request.body;
+      const { title, users } = request.body;
 
       try {
          const list_id = await TodoList.create(user.id, title);
+
+         if (users?.length > 0) {
+            for (let i = 0; i < users.length; i++) {
+               const email = users[i];
+
+               const [_user] = await User.where({ email });
+
+               await UserTodoList.create({
+                  user_id: _user.id,
+                  list_id,
+               });
+            }
+         }
+
          return response.json({ list_id });
       } catch (error) {
+         console.log(error);
          return response.sendStatus(500);
       }
    }
@@ -53,6 +69,18 @@ export default class TodoListController {
          }
          response.send('users added to list');
       } catch (error) {}
+   }
+
+   static async searchUsers(request, response) {
+      const { q: searchTerm } = request.query;
+      const user = request.user;
+
+      try {
+         const emails = await User.searchForEmails(searchTerm, user.id);
+         response.json(emails);
+      } catch (error) {
+         console.log(error);
+      }
    }
 
    static async update(request, response) {

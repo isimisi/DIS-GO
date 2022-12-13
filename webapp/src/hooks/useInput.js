@@ -72,4 +72,4 @@ const useInput = (validateValueFn) => {
    };
 };
 
-export default useInput
+export default useInput;

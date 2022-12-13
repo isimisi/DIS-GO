@@ -15,6 +15,7 @@ import FormatListNumberedOutlinedIcon from '@mui/icons-material/FormatListNumber
 import { logout } from '../api/login';
 import useLocalStorage from '../hooks/useLocalStorage';
 import meta from '../api/meta';
+import { pages as definedPages } from '../api/constants';
 
 const settings = ['Logout'];
 
@@ -22,18 +23,21 @@ const ResponsiveAppBar = (props) => {
    const { isLoggedIn, goToPage, login, resetItems } = props;
    const [anchorElNav, setAnchorElNav] = useState(null);
    const [anchorElUser, setAnchorElUser] = useState(null);
-   const [pages, setPages] = useState(['login', 'signup']);
+   const [pages, setPages] = useState([
+      definedPages.login,
+      definedPages.verification,
+   ]);
 
    const { loadFromLocalStorage, clearLocalStorage, saveToLocalStorage } =
       useLocalStorage();
 
    useEffect(() => {
       if (!isLoggedIn) {
-         setPages(['login', 'signup']);
+         setPages([definedPages.login, definedPages.verification]);
       }
 
       if (isLoggedIn) {
-         setPages(['todo-list']);
+         setPages([definedPages.personalTodo, definedPages.listOfSharedTodos]);
       }
    }, [isLoggedIn, loadFromLocalStorage]);
 
@@ -76,7 +80,7 @@ const ResponsiveAppBar = (props) => {
       resetItems();
       clearLocalStorage();
       await logout();
-      goToPage('login');
+      goToPage(definedPages.login);
    };
 
    return (

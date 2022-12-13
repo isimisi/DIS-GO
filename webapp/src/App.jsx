@@ -9,9 +9,10 @@ import { useEffect } from 'react';
 import { fetchTodos } from './api/personalTodos';
 import Todo from './components/Todo';
 import ListIndex from './components/ListOfSharedTodos';
+import { pages } from './api/constants';
 
 function App() {
-   const [pageState, setPageState] = useState('login');
+   const [pageState, setPageState] = useState(pages.login);
    const [loadingState, setLoadingState] = useState(true);
    const [itemsState, setItemsState] = useState([]);
    const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -20,10 +21,6 @@ function App() {
       setLoadingState((prevState) => !prevState);
    };
 
-   /**
-    *
-    * @param {boolean} boolean
-    */
    const loginHandler = (boolean) => {
       setIsLoggedIn(boolean);
    };
@@ -35,10 +32,7 @@ function App() {
    const handleGoToPage = (page) => {
       setPageState(page);
    };
-   /**
-    *
-    * @param {{ id: number, user_id: number, todo_text: string, is_done: number}} data
-    */
+
    const addItemsHandler = (data) => {
       setItemsState((prevState) => [...prevState, data]);
    };
@@ -55,12 +49,12 @@ function App() {
    useEffect(() => {
       fetchTodos()
          .then((res) => {
-            setPageState('todo-list');
+            setPageState(pages.personalTodo);
             setItemsState(res);
             setIsLoggedIn(true);
          })
          .catch(() => {
-            setPageState('login');
+            setPageState(pages.login);
             setIsLoggedIn(false);
             return;
          })
@@ -74,24 +68,24 @@ function App() {
       <LoaderSpinner />
    ) : (
       <>
-         {pageState === 'signup' && (
+         {pageState === pages.signup && (
             <RegisterForm goToPage={handleGoToPage} loading={loadingHandler} />
          )}
-         {pageState === 'login' && (
+         {pageState === pages.login && (
             <LoginForm
                goToPage={handleGoToPage}
                loading={loadingHandler}
                login={loginHandler}
             />
          )}
-         {pageState === 'todo-list' && (
+         {pageState === pages.personalTodo && (
             <Todo
                items={itemsState}
                addItems={addItemsHandler}
                removeItem={deleteItemHandler}
             />
          )}
-         {pageState === 'verification' && (
+         {pageState === pages.verification && (
             <VerifyUser goToPage={handleGoToPage} login={loginHandler} />
          )}
       </>
