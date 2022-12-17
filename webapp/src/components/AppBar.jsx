@@ -20,7 +20,7 @@ import { pages as definedPages } from '../api/constants';
 const settings = ['Logout'];
 
 const ResponsiveAppBar = (props) => {
-   const { isLoggedIn, goToPage, login, resetItems } = props;
+   const { isLoggedIn, goToPage, login } = props;
    const [anchorElNav, setAnchorElNav] = useState(null);
    const [anchorElUser, setAnchorElUser] = useState(null);
    const [pages, setPages] = useState([
@@ -77,7 +77,6 @@ const ResponsiveAppBar = (props) => {
    const handleLogout = async () => {
       login(false);
       handleCloseUserMenu();
-      resetItems();
       clearLocalStorage();
       await logout();
       goToPage(definedPages.login);

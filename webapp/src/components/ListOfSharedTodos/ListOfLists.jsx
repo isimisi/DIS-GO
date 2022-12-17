@@ -5,19 +5,9 @@ import ListItem from '@mui/joy/ListItem';
 import ListItemButton from '@mui/joy/ListItemButton';
 import FormatListNumberedIcon from '@mui/icons-material/FormatListNumbered';
 import { Divider } from '@mui/material';
-import { fetchTodoLists } from '../../api/listOfSharedTodos';
+import { pages } from '../../api/constants';
 
-export default function ListOfLists() {
-   const [todoLists, setTodoLists] = React.useState([]);
-
-   React.useEffect(() => {
-      fetchTodoLists()
-         .then((res) => setTodoLists(res))
-         .catch((error) => {
-            console.log(error);
-         });
-   }, []);
-
+export default function ListOfLists(props) {
    return (
       <Box
          sx={{
@@ -79,10 +69,13 @@ export default function ListOfLists() {
                   bgcolor: '#6BB2F590',
                }}
             />
-            {todoLists.map((list) => {
+            {props.lists.map((list) => {
                return (
                   <ListItem key={list.id}>
                      <ListItemButton
+                        onClick={() =>
+                           props.goToPage(pages.sharedTodo(list.id))
+                        }
                         sx={{
                            display: 'flex',
                            justifyContent: 'center',

@@ -19,6 +19,9 @@ import todoRouter from './routes/todo.js';
 
 import Mail from './App/Services/MailService(deprecated).js';
 
+import Socket from './App/Services/SocketService.js';
+import TodoSocketController from './App/Controllers/Ws/TodoController.js';
+
 const port = Env.get('PORT');
 const httpsPort = Env.get('HTTPS_PORT');
 
@@ -49,6 +52,10 @@ app.use(function (req, res, next) {
    next();
 });
 
+const io = Socket(app);
+
+io.boot();
+
 app.get('/', function (req, res) {
    res.send(
       `<img src="https://w0.peakpx.com/wallpaper/396/980/HD-wallpaper-racoons-cup-animal-animals-cute-raccoon-wholesome.jpg">`
@@ -76,10 +83,16 @@ app.use('/todos', todoRouter);
 app.use('/personaltodos', personalTodoRouter);
 app.use('/todolist', todoListsRouter);
 
+TodoSocketController(io);
+
 // redirectServer.listen(port);
 
-app.listen(3333, () => console.log('listening on port 3333'));
+// app.listen(3333, () => console.log('listening on port 3333'));
 
 // createServer(httpsOptions, app).listen(httpsPort, function () {
 //    console.log(startupMsg);
 // });
+
+io.listen(3333, function () {
+   console.log('listening on port:', 3333);
+});

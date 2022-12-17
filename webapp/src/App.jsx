@@ -6,15 +6,16 @@ import LoaderSpinner from './components/LoaderSpinner';
 import LoginForm from './components/LoginForm';
 import VerifyUser from './components/VerifyUser';
 import { useEffect } from 'react';
-import { fetchTodos } from './api/personalTodos';
 import Todo from './components/Todo';
 import ListIndex from './components/ListOfSharedTodos';
 import { pages } from './api/constants';
+import meta from './api/meta';
+
+import SharedTodo from './components/sharedTodo';
 
 function App() {
    const [pageState, setPageState] = useState(pages.login);
    const [loadingState, setLoadingState] = useState(true);
-   const [itemsState, setItemsState] = useState([]);
    const [isLoggedIn, setIsLoggedIn] = useState(false);
 
    const loadingHandler = () => {
@@ -25,43 +26,23 @@ function App() {
       setIsLoggedIn(boolean);
    };
 
-   const resetItemsHandler = () => {
-      setItemsState([]);
-   };
-
    const handleGoToPage = (page) => {
       setPageState(page);
    };
 
-   const addItemsHandler = (data) => {
-      setItemsState((prevState) => [...prevState, data]);
-   };
-
-   const deleteItemHandler = (id) => {
-      setItemsState((prevState) => {
-         const copy = [...prevState];
-         const index = copy.findIndex((item) => item.id === id);
-         copy.splice(index, 1);
-         return copy;
-      });
-   };
-
    useEffect(() => {
-      fetchTodos()
-         .then((res) => {
-            setPageState(pages.personalTodo);
-            setItemsState(res);
+      (async () => {
+         try {
+            await meta();
             setIsLoggedIn(true);
-         })
-         .catch(() => {
-            setPageState(pages.login);
+            setPageState(pages.personalTodo);
+         } catch (error) {
             setIsLoggedIn(false);
-            return;
-         })
-
-         .finally(() => {
+            setPageState(pages.login);
+         } finally {
             setLoadingState(false);
-         });
+         }
+      })();
    }, [isLoggedIn]);
 
    const content = loadingState ? (
@@ -79,15 +60,18 @@ function App() {
             />
          )}
          {pageState === pages.personalTodo && (
-            <Todo
-               items={itemsState}
-               addItems={addItemsHandler}
-               removeItem={deleteItemHandler}
-            />
+            <Todo goToPage={handleGoToPage} login={loginHandler} />
          )}
          {pageState === pages.verification && (
             <VerifyUser goToPage={handleGoToPage} login={loginHandler} />
          )}
+         {pageState === pages.listOfSharedTodos && (
+            <ListIndex
+               setLoadingState={setLoadingState}
+               goToPage={handleGoToPage}
+            />
+         )}
+         {pageState.includes('sharedTodo') && <SharedTodo page={pageState} />}
       </>
    );
 
@@ -97,9 +81,8 @@ function App() {
             goToPage={handleGoToPage}
             isLoggedIn={isLoggedIn}
             login={loginHandler}
-            resetItems={resetItemsHandler}
          />
-         <ListIndex />
+         {content}
       </div>
    );
 }

@@ -11,8 +11,9 @@ import Button from '@mui/joy/Button';
 import useInput from '../../hooks/useInput';
 import { createTodoList, searchMail } from '../../api/listOfSharedTodos';
 import TextField from '@mui/joy/TextField';
+import { pages } from '../../api/constants';
 
-export default function ListForm() {
+export default function ListForm({ goToPage }) {
    const [open, setOpen] = React.useState(false);
    const [options, setOptions] = React.useState([]);
    const [loading, setLoading] = React.useState(false);
@@ -20,14 +21,12 @@ export default function ListForm() {
    const {
       value: searchTerm,
       isValid: searchTermIsValid,
-      hasError: searchTermHasError,
       valueChangeHandler: searchTermChangeHandler,
       reset: searchTermReset,
    } = useInput();
 
    const {
       value: title,
-      isValid: titleIsValid,
       hasError: titleHasError,
       valueChangeHandler: titleChangeHandler,
       inputBlurHandler: titleBlurHandler,
@@ -36,8 +35,6 @@ export default function ListForm() {
 
    const {
       value: users,
-      isValid: usersIsValid,
-      hasError: usersHasError,
       valueChangeHandler: usersChangeHandler,
       inputBlurHandler: usersBlurHandler,
       reset: usersReset,
@@ -81,7 +78,7 @@ export default function ListForm() {
             const response = await createTodoList(title, users);
             titleReset();
             usersReset();
-            console.log(response);
+            goToPage(pages.sharedTodo(response.list_id));
          } catch (error) {
             usersReset();
             titleReset();

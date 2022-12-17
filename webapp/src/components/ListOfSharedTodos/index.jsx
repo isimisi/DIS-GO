@@ -5,8 +5,31 @@ import ListOfLists from './ListOfLists';
 import Divider from '@mui/material/Divider';
 import { Box } from '@mui/material';
 import Typography from '@mui/joy/Typography';
+import LoaderSpinner from '../LoaderSpinner';
+import { fetchTodoLists } from '../../api/listOfSharedTodos';
 
-export default function ListIndex() {
+export default function ListIndex(props) {
+   const [loader, setLoader] = React.useState(true);
+   const [todoLists, setTodoLists] = React.useState([]);
+
+   React.useEffect(() => {
+      setLoader(true);
+      console.log('test');
+
+      (async () => {
+         try {
+            const response = await fetchTodoLists();
+            setTodoLists(response);
+            setLoader(false);
+         } catch (error) {
+            console.log(error);
+            setLoader(false);
+         }
+      })();
+   }, []);
+
+   if (loader) return <LoaderSpinner />;
+
    return (
       <Box
          sx={{
@@ -29,7 +52,7 @@ export default function ListIndex() {
                }}>
                Create a new shared Todo-list
             </Typography>
-            <ListForm />
+            <ListForm goToPage={props.goToPage} />
             <Divider
                sx={{
                   width: '90%',
@@ -38,7 +61,7 @@ export default function ListIndex() {
                   bgcolor: '#002E9490',
                }}
             />
-            <ListOfLists />
+            <ListOfLists setLoadingState={setLoader} lists={todoLists} goToPage={props.goToPage}/>
          </CssVarsProvider>
       </Box>
    );

@@ -2,10 +2,11 @@ import Todo from '../Models/Todo.js';
 
 export default class TodoController {
    static async index(request, response) {
-      const list_id = request.todoList.id;
+      const { id } = request.params;
 
       try {
-         const todos = await Todo.allListTodos(list_id);
+         const todos = await Todo.allListTodos(id);
+         request.session.todoList = (await Todo.find(id))[0];
          response.json(todos);
       } catch (error) {
          console.log(error);
