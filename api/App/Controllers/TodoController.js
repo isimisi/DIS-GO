@@ -1,13 +1,21 @@
-import Todo from '../Models/Todo.js';
+import Todo from '#App/Models/Todo';
+import jsonwebtoken from 'jsonwebtoken';
+import JWT from '#App/Services/JWT';
 
 export default class TodoController {
    static async index(request, response) {
-      const { id } = request.params;
+      const { id: list_id } = request.params;
+      let token = null;
 
       try {
-         const todos = await Todo.allListTodos(id);
-         request.session.todoList = (await Todo.find(id))[0];
-         response.json(todos);
+         token = await JWT.sign(request.user);
+      } catch (error) {
+         return response.status(501).send(error.message);
+      }
+
+      try {
+         const todos = await Todo.allListTodos(list_id);
+         response.json({ todos, token });
       } catch (error) {
          console.log(error);
          response.status(501).send(error);
@@ -28,7 +36,6 @@ export default class TodoController {
    static async create(request, response) {
       const { todo_text } = request.body;
       todoList = request.todoList;
-
       try {
          const id = await Todo.create({
             list_id: todoList.id,

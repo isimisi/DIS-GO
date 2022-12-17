@@ -1,9 +1,15 @@
-export default function todoListPath(request, response, next) {
-   const todoList = request.session.todoList;
+import TodoList from '#App/Models/TodoList';
 
-   if (!todoList) return response.sendStatus(500);
+export default async function todoListPath(request, response, next) {
+   const { id } = request.params;
 
-   request.todoList = { ...todoList };
+   if (!id) return response.sendStatus(500);
+   try {
+      const [todoList] = await TodoList.find(id);
+      request.todoList = todoList;
+   } catch (error) {
+      return response.sendStatus(500);
+   }
 
    next();
 }

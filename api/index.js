@@ -1,13 +1,10 @@
 import express from 'express';
 import cors from 'cors';
 import session from 'express-session';
-import { createServer } from 'https';
-import { createServer as httpCreate } from 'http';
 
 import corsConfig from '#config/Cors';
 import sessionConfig from '#config/Session';
 import Env from '#config/Env';
-import httpsOptions from '#config/Https';
 
 import startupMsg from './utils/cli-box.js';
 
@@ -16,8 +13,6 @@ import authRouter from './routes/auth.js';
 import todoListsRouter from './routes/todoLists.js';
 import personalTodoRouter from './routes/personalTodos.js';
 import todoRouter from './routes/todo.js';
-
-import Mail from './App/Services/MailService(deprecated).js';
 
 import Socket from './App/Services/SocketService.js';
 import TodoSocketController from './App/Controllers/Ws/TodoController.js';
@@ -28,10 +23,7 @@ const httpsPort = Env.get('HTTPS_PORT');
 const app = express();
 const redirectServer = express();
 
-redirectServer.all('*', (request, response) => {
-   const httpsURL = `https://${request.hostname}:${httpsPort}`;
-   response.redirect(httpsURL);
-});
+redirectServer.use(cors(corsConfig));
 
 app.use(cors(corsConfig));
 app.set('trust proxy', 1);
@@ -56,25 +48,15 @@ const io = Socket(app);
 
 io.boot();
 
+redirectServer.all('*', (request, response) => {
+   const httpsURL = `https://${request.hostname}:${httpsPort}`;
+   response.redirect(httpsURL);
+});
+
 app.get('/', function (req, res) {
    res.send(
       `<img src="https://w0.peakpx.com/wallpaper/396/980/HD-wallpaper-racoons-cup-animal-animals-cute-raccoon-wholesome.jpg">`
    );
-});
-
-app.post('/mail', async function (request, response) {
-   const { subject, text } = request.body;
-
-   try {
-      await Mail.verificationMail(
-         { first_name: 'Isaac', email: 'isaacj.ahmad@gmail.com' },
-         5685
-      );
-      response.send('ok');
-   } catch (error) {
-      console.log(error);
-      response.status(404).send('err');
-   }
 });
 
 app.use('/', authRouter);
@@ -85,14 +67,9 @@ app.use('/todolist', todoListsRouter);
 
 TodoSocketController(io);
 
-// redirectServer.listen(port);
+redirectServer.listen(port);
 
-// app.listen(3333, () => console.log('listening on port 3333'));
-
-// createServer(httpsOptions, app).listen(httpsPort, function () {
-//    console.log(startupMsg);
-// });
-
-io.listen(3333, function () {
-   console.log('listening on port:', 3333);
+io.listen(httpsPort, function () {
+   console.clear();
+   console.log(startupMsg(httpsPort));
 });

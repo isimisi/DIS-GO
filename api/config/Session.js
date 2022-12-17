@@ -15,12 +15,12 @@ export default {
          intervalMs: 900000, //ms = 15min
       },
    }),
-   resave: false,
+   resave: Env.get('NODE_ENV') === 'production',
    saveUninitialized: true,
    cookie: {
       httpOnly: true,
-      secure: false,
-      // sameSite: 'none',
-      maxAge: 10*24*60*60*1000
+      secure: Env.get('NODE_ENV') === 'production',
+      sameSite: Env.get('NODE_ENV') === 'production' ? 'none' : 'lax',
+      maxAge: 10 * 24 * 60 * 60 * 1000,
    },
 };

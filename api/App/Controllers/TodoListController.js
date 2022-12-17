@@ -15,11 +15,10 @@ export default class TodoListController {
    }
 
    static async show(request, response) {
-      const { list_id } = request.params;
+      const { id } = request.params;
 
       try {
-         const [todoList] = await TodoList.find(list_id);
-         request.session.todoList = todoList;
+         const [todoList] = await TodoList.find(id);
 
          return response.json(todoList);
       } catch (error) {

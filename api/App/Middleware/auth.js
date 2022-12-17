@@ -1,8 +1,8 @@
-import User from '../Models/User.js';
+import User from '#App/Models/User';
 
 export default async function authToken(request, response, next) {
    const user = request.session.user;
-   
+
    if (!user) return response.sendStatus(401);
 
    try {

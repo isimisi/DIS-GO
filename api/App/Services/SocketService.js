@@ -1,11 +1,12 @@
 import { Server } from 'socket.io';
-import { createServer } from 'http';
+import { createServer } from 'https';
 
+import httpsConfig from '#config/Https'
 import corsConfig from '#config/Cors';
 
 export class SocketIO {
    constructor(app) {
-      this.http = createServer(app);
+      this.http = createServer(httpsConfig, app);
    }
 
    io = null;
