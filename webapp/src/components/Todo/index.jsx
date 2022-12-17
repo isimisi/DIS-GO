@@ -5,6 +5,7 @@ import TodoInput from './TodoInput';
 import { fetchTodos } from '../../api/personalTodos';
 import LoaderSpinner from '../LoaderSpinner';
 import { pages } from '../../api/constants';
+import { Typography } from '@mui/material';
 
 function Todo(props) {
    const [items, setItems] = useState([]);
@@ -36,16 +37,31 @@ function Todo(props) {
             setLoader(false);
          }
       })();
-   }, []);
+   }, [props]);
 
    if (loader) return <LoaderSpinner />;
 
    return (
-      <div className="todo">
-         <h5>personalTodos</h5>
-         <TodoInput addItem={addItemsHandler} />
-         <TodoList items={items} removeItem={deleteItemHandler} />
-      </div>
+      <>
+         <Typography
+            sx={{
+               fontFamily: 'monospace',
+               fontWeight: 700,
+               fontSize: 24,
+               letterSpacing: '.05rem',
+               color: '#002E94',
+               margin: '1rem auto',
+               ':first-letter': {
+                  textTransform: 'uppercase',
+               },
+            }}>
+            Your Personal Todo list
+         </Typography>
+         <div className="todo">
+            <TodoInput addItem={addItemsHandler} />
+            <TodoList items={items} removeItem={deleteItemHandler} />
+         </div>
+      </>
    );
 }
 

@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { TextField } from '@mui/material';
 import useInput from '../../hooks/useInput';
-import { createTodo } from '../../api/personalTodos';
 
 function TodoInput(props) {
    const {
@@ -16,15 +15,9 @@ function TodoInput(props) {
       if (e.key === 'Enter') {
          if (!todoIsValid) return;
          todoReset();
-         createTodo(e.target.value)
-            .then((res) => props.addItem(res))
-            .catch((error) => console.log(error));
+         props.addItem({ list_id: props.list_id, todo_text: e.target.value });
       }
    };
-
-   useEffect(() => {
-      props.test();
-   }, []);
 
    return (
       <TextField

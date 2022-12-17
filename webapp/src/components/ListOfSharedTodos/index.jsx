@@ -14,7 +14,6 @@ export default function ListIndex(props) {
 
    React.useEffect(() => {
       setLoader(true);
-      console.log('test');
 
       (async () => {
          try {
@@ -61,7 +60,11 @@ export default function ListIndex(props) {
                   bgcolor: '#002E9490',
                }}
             />
-            <ListOfLists setLoadingState={setLoader} lists={todoLists} goToPage={props.goToPage}/>
+            <ListOfLists
+               setLoadingState={setLoader}
+               lists={todoLists}
+               goToPage={props.goToPage}
+            />
          </CssVarsProvider>
       </Box>
    );

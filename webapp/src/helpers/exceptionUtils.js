@@ -2,12 +2,7 @@ import ReactDOM from 'react-dom/client';
 import React from 'react';
 import SnackBar from '../components/SnackBarNotification';
 
-const triggerSnackbar = (
-   title,
-   message,
-   messageType,
-   { timer = 4000 }
-) => {
+const triggerSnackbar = (title, message, messageType, { timer = 4000 }) => {
    const validMessageTypes = ['error', 'info', 'warning', 'success'];
    if (!validMessageTypes.includes(messageType)) {
       throw Error('Invalid snackbar message type');
@@ -28,8 +23,8 @@ const triggerSnackbar = (
    );
 };
 
-export const showErrorMessage = (title, message) => {
-   triggerSnackbar(title, message, 'error');
+export const showErrorMessage = (title, message, timer = 3000) => {
+   triggerSnackbar(title, message, 'error', { timer });
 };
 
 export const showInfoMessage = (title, message) => {

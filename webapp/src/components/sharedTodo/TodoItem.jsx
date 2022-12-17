@@ -4,7 +4,6 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Checkbox from '@mui/material/Checkbox';
-import { updateTodo, removeTodo } from '../../api/personalTodos';
 import { IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 
@@ -14,22 +13,18 @@ export default function TodoItem(props) {
    useEffect(() => {
       if (props.checked) {
          setChecked(true);
+      } else {
+         setChecked(false);
       }
    }, [props.checked]);
 
    const handleToggle = () => {
-      setChecked((prevValue) => !prevValue);
-      updateTodo({
-         id: props.id,
-         is_done: Number(!checked),
-         todo_text: undefined,
-      });
+      props.checkItem(props.id, Number(!checked));
    };
 
    const removeHandler = (e) => {
       e.preventDefault();
       props.removeItem(props.id);
-      removeTodo(props.id);
    };
 
    const style = checked

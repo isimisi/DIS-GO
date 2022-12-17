@@ -16,17 +16,17 @@ import { logout } from '../api/login';
 import useLocalStorage from '../hooks/useLocalStorage';
 import meta from '../api/meta';
 import { pages as definedPages } from '../api/constants';
-
-const settings = ['Logout'];
+import { removeList } from '../api/sharedTodo';
 
 const ResponsiveAppBar = (props) => {
-   const { isLoggedIn, goToPage, login } = props;
+   const { isLoggedIn, goToPage, login, currentPage } = props;
    const [anchorElNav, setAnchorElNav] = useState(null);
    const [anchorElUser, setAnchorElUser] = useState(null);
    const [pages, setPages] = useState([
       definedPages.login,
       definedPages.verification,
    ]);
+   const [settings, setSettings] = useState(['Logout']);
 
    const { loadFromLocalStorage, clearLocalStorage, saveToLocalStorage } =
       useLocalStorage();
@@ -40,6 +40,14 @@ const ResponsiveAppBar = (props) => {
          setPages([definedPages.personalTodo, definedPages.listOfSharedTodos]);
       }
    }, [isLoggedIn, loadFromLocalStorage]);
+
+   useEffect(() => {
+      if (currentPage.includes('sharedTodo')) {
+         setSettings(['Logout', 'Delete List']);
+      } else {
+         setSettings(['Logout']);
+      }
+   }, [currentPage]);
 
    const handleOpenNavMenu = (event) => {
       setAnchorElNav(event.currentTarget);
@@ -80,6 +88,18 @@ const ResponsiveAppBar = (props) => {
       clearLocalStorage();
       await logout();
       goToPage(definedPages.login);
+   };
+
+   const handleRemoveList = async () => {
+      try {
+         const id = currentPage.split('/').at(-1);
+         await removeList(id);
+         goToPage(definedPages.listOfSharedTodos);
+         handleCloseUserMenu();
+      } catch (error) {
+         handleCloseUserMenu();
+         console.log(error);
+      }
    };
 
    return (
@@ -205,6 +225,8 @@ const ResponsiveAppBar = (props) => {
                            onClick={
                               setting === 'Logout'
                                  ? handleLogout
+                                 : setting === 'Delete List'
+                                 ? handleRemoveList
                                  : handleCloseUserMenu
                            }>
                            <Typography textAlign="center">{setting}</Typography>

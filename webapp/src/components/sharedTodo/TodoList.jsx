@@ -12,6 +12,7 @@ export default function TodoList(props) {
                   id={item.id}
                   text={item.todo_text}
                   checked={Boolean(item.is_done)}
+                  checkItem={props.checkItem}
                   removeItem={props.removeItem}
                />
             );

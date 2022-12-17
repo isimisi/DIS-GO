@@ -2,7 +2,6 @@ import * as React from 'react';
 import FormControl from '@mui/joy/FormControl';
 import FormLabel from '@mui/joy/FormLabel';
 import FormHelperText from '@mui/joy/FormHelperText';
-import Input from '@mui/joy/Input';
 import Autocomplete from '@mui/joy/Autocomplete';
 import { Box } from '@mui/material';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
@@ -71,7 +70,6 @@ export default function ListForm({ goToPage }) {
    function submitHandler(e) {
       e.preventDefault();
       if (titleHasError) return;
-      console.log(title, users);
 
       (async () => {
          try {

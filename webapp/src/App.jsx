@@ -71,7 +71,9 @@ function App() {
                goToPage={handleGoToPage}
             />
          )}
-         {pageState.includes('sharedTodo') && <SharedTodo page={pageState} />}
+         {pageState.includes('sharedTodo') && (
+            <SharedTodo page={pageState} goToPage={handleGoToPage} />
+         )}
       </>
    );
 
@@ -81,6 +83,7 @@ function App() {
             goToPage={handleGoToPage}
             isLoggedIn={isLoggedIn}
             login={loginHandler}
+            currentPage={pageState}
          />
          {content}
       </div>

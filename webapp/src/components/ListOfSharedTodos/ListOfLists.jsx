@@ -6,6 +6,7 @@ import ListItemButton from '@mui/joy/ListItemButton';
 import FormatListNumberedIcon from '@mui/icons-material/FormatListNumbered';
 import { Divider } from '@mui/material';
 import { pages } from '../../api/constants';
+import Typography from '@mui/joy/Typography';
 
 export default function ListOfLists(props) {
    return (
@@ -80,8 +81,8 @@ export default function ListOfLists(props) {
                            display: 'flex',
                            justifyContent: 'center',
                            alignItems: 'center',
-                           textTransform: 'capitalize',
                            color: '#2D7CC7',
+
                            ':hover': {
                               bgcolor: '#DDEBF8',
                               color: '#12375A',
@@ -90,7 +91,15 @@ export default function ListOfLists(props) {
                               bgcolor: '#12375A50',
                            },
                         }}>
-                        {list.title}
+                        <Typography
+                           sx={{
+                              color: 'inherit',
+                              ':first-letter': {
+                                 textTransform: 'uppercase',
+                              },
+                           }}>
+                           {list.title}
+                        </Typography>
                      </ListItemButton>
                   </ListItem>
                );
