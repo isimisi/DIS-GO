@@ -27,6 +27,17 @@ export default function ListIndex(props) {
       })();
    }, []);
 
+   const refreshHandler = () => {
+      (async () => {
+         try {
+            const response = await fetchTodoLists();
+            setTodoLists(response);
+         } catch (error) {
+            console.log(error);
+         }
+      })();
+   };
+
    if (loader) return <LoaderSpinner />;
 
    return (
@@ -64,6 +75,7 @@ export default function ListIndex(props) {
                setLoadingState={setLoader}
                lists={todoLists}
                goToPage={props.goToPage}
+               refresh={refreshHandler}
             />
          </CssVarsProvider>
       </Box>

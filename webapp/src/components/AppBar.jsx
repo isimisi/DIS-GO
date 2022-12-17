@@ -24,7 +24,7 @@ const ResponsiveAppBar = (props) => {
    const [anchorElUser, setAnchorElUser] = useState(null);
    const [pages, setPages] = useState([
       definedPages.login,
-      definedPages.verification,
+      definedPages.signup,
    ]);
    const [settings, setSettings] = useState(['Logout']);
 
@@ -33,7 +33,7 @@ const ResponsiveAppBar = (props) => {
 
    useEffect(() => {
       if (!isLoggedIn) {
-         setPages([definedPages.login, definedPages.verification]);
+         setPages([definedPages.login, definedPages.signup]);
       }
 
       if (isLoggedIn) {

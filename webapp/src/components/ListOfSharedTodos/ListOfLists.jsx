@@ -44,7 +44,8 @@ export default function ListOfLists(props) {
                   borderRadius: '100px',
                },
             }}>
-            <ListItem
+            <ListItemButton
+               onClick={props.refresh}
                sx={{
                   display: 'flex',
                   justifyContent: 'center',
@@ -64,7 +65,7 @@ export default function ListOfLists(props) {
                   }}>
                   Your shared Todo-lists
                </p>
-            </ListItem>
+            </ListItemButton>
             <Divider
                sx={{
                   bgcolor: '#6BB2F590',
