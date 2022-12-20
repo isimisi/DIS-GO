@@ -6,18 +6,14 @@ import corsConfig from '#config/Cors';
 import sessionConfig from '#config/Session';
 import Env from '#config/Env';
 
-import startupMsg from './utils/cli-box.js';
-
 import userRouter from './routes/user.js';
 import authRouter from './routes/auth.js';
 import todoListsRouter from './routes/todoLists.js';
 import personalTodoRouter from './routes/personalTodos.js';
 import todoRouter from './routes/todo.js';
 
-import Socket from './App/Services/SocketService.js';
-import TodoSocketController from './App/Controllers/Ws/TodoController.js';
+import loadBalancer from './load-balancer.js';
 
-const port = Env.get('PORT');
 const httpsPort = Env.get('HTTPS_PORT');
 
 const app = express();
@@ -44,10 +40,6 @@ app.use(function (req, res, next) {
    next();
 });
 
-const io = Socket(app);
-
-io.boot();
-
 redirectServer.all('*', (request, response) => {
    const httpsURL = `https://${request.hostname}:${httpsPort}`;
    response.redirect(httpsURL);
@@ -65,11 +57,4 @@ app.use('/todos', todoRouter);
 app.use('/personaltodos', personalTodoRouter);
 app.use('/todolist', todoListsRouter);
 
-TodoSocketController(io);
-
-redirectServer.listen(port);
-
-io.listen(httpsPort, function () {
-   console.clear();
-   console.log(startupMsg(httpsPort));
-});
+loadBalancer(app, redirectServer);
