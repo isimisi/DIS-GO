@@ -9,7 +9,7 @@ import Loader from './Loader';
 import Button from '@mui/joy/Button';
 import useInput from '../../hooks/useInput';
 import { createTodoList, searchMail } from '../../api/listOfSharedTodos';
-import TextField from '@mui/joy/TextField';
+import { Input } from '@mui/joy/';
 import { pages } from '../../api/constants';
 
 export default function ListForm({ goToPage }) {
@@ -106,7 +106,7 @@ export default function ListForm({ goToPage }) {
                }}>
                Title
             </FormLabel>
-            <TextField
+            <Input
                placeholder="Example Title"
                required={true}
                sx={{
@@ -119,8 +119,10 @@ export default function ListForm({ goToPage }) {
                onBlur={titleBlurHandler}
                value={title}
                error={titleHasError}
-               helperText={titleHasError && 'This field cannot be left empty.'}
             />
+            {titleHasError && (
+               <FormHelperText>This field cannot be left empty.</FormHelperText>
+            )}
          </Box>
          <Box
             sx={{

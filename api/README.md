@@ -3,5 +3,5 @@
 
 - kør npm install <br>
 - kør npm run migrations <br>
-- kør npm start <br>
+- kør npm run dev <br>
 - Start frontend serveren
