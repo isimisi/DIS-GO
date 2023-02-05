@@ -1,5 +1,6 @@
 import cluster from 'cluster';
 import https from 'https';
+import http from 'http';
 import os from 'os';
 import { setupMaster, setupWorker } from '@socket.io/sticky';
 import { createAdapter, setupPrimary } from '@socket.io/cluster-adapter';
@@ -10,33 +11,36 @@ import httpsConfig from '#config/Https';
 import Env from '#config/Env';
 
 const httpsPort = Env.get('HTTPS_PORT');
-const redirectPort = Env.get('PORT');
+const redirectPort = Env.get('REDIRECT_PORT');
+const httpPort = Env.get('PORT')
 
-export default function loadBalancer(
+export default function roundRobin(
    app,
    redirectServer,
    numOfCPU = os.cpus().length,
-   port = httpsPort
+   port = +Env.get('ENABLE_HTTPS') ? httpsPort : httpPort
 ) {
    if (cluster.isPrimary) {
       console.log(`Primary ${process.pid} is running...`);
 
-      const httpsServer = https.createServer(httpsConfig);
+      const masterServer = +Env.get('ENABLE_HTTPS')
+         ? https.createServer(httpsConfig)
+         : http.createServer();
 
-      setupMaster(httpsServer, {
+      setupMaster(masterServer, {
          loadBalancingMethod: 'least-connection',
       });
 
       setupPrimary();
 
-      httpsServer.listen(8080);
+      masterServer.listen(8080);
       redirectServer.listen(redirectPort);
 
       for (let i = 0; i < numOfCPU; i++) {
          cluster.fork();
       }
       console.clear();
-      console.log(startupMsg(httpsPort));
+      console.log(startupMsg(port));
 
       cluster.on('exit', (worker) => {
          console.log(`Worker ${worker.process.pid} died`);

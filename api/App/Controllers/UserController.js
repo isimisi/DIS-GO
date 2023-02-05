@@ -14,7 +14,7 @@ export default class UserController {
             })
          );
       } catch (error) {
-         response.status(400).send('error');
+         response.status(500).send('error');
       }
    }
 
@@ -26,7 +26,9 @@ export default class UserController {
          const user = request.user;
          delete user.password;
          response.json(user);
-      } catch (error) {}
+      } catch (error) {
+         response.status(500).send('error');
+      }
    }
 
    /**
@@ -41,7 +43,7 @@ export default class UserController {
          response.json(user);
       } catch (error) {
          console.log(error);
-         response.status(400).send(error);
+         response.status(500).send(error);
       }
    }
 
@@ -63,7 +65,7 @@ export default class UserController {
          response.json(user);
       } catch (error) {
          console.log(error);
-         response.status(400).send(error);
+         response.status(500).send(error);
       }
    }
 
@@ -76,7 +78,7 @@ export default class UserController {
          await User.remove(user.id);
          response.send('user deleted');
       } catch (error) {
-         response.status(400).send('error');
+         response.status(500).send('error');
       }
    }
 }

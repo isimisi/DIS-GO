@@ -12,7 +12,7 @@ import todoListsRouter from './routes/todoLists.js';
 import personalTodoRouter from './routes/personalTodos.js';
 import todoRouter from './routes/todo.js';
 
-import loadBalancer from './load-balancer.js';
+import roundRobin from './round-robin.js';
 
 const httpsPort = Env.get('HTTPS_PORT');
 
@@ -23,25 +23,26 @@ redirectServer.use(cors(corsConfig));
 
 app.use(cors(corsConfig));
 app.set('trust proxy', 1);
+redirectServer.set('trust proxy', 1);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(session(sessionConfig));
 
-app.use(function (req, res, next) {
-   res.header('Access-Control-Allow-Credentials', true);
-   res.header('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE');
-   // res.header("Access-Control-Allow-Origin", process.env.ORIGIN);
-   res.header(
-      'Access-Control-Allow-Headers',
-      'Origin, X-Requested-With, Content-   Type, Accept, Authorization'
-   );
-   next();
-});
+// app.use(function (req, res, next) {
+//    res.header('Access-Control-Allow-Credentials', true);
+//    res.header('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE');
+//    // res.header("Access-Control-Allow-Origin", process.env.ORIGIN);
+//    res.header(
+//       'Access-Control-Allow-Headers',
+//       'Origin, X-Requested-With, Content-   Type, Accept, Authorization'
+//    );
+//    next();
+// });
 
 redirectServer.all('*', (request, response) => {
-   const httpsURL = `https://${request.hostname}:${httpsPort}`;
+   const httpsURL = `https://${request.hostname}:${httpsPort}${request.originalUrl}`;
    response.redirect(httpsURL);
 });
 
@@ -57,4 +58,4 @@ app.use('/todos', todoRouter);
 app.use('/personaltodos', personalTodoRouter);
 app.use('/todolist', todoListsRouter);
 
-loadBalancer(app, redirectServer);
+roundRobin(app, redirectServer);

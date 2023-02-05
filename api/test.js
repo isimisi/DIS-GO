@@ -1,31 +1,72 @@
-import Todo from './App/Models/Todo.js';
-import TodoList from './App/Models/TodoList.js';
-import User from './App/Models/User.js';
-import database from './database/index.js';
+import axios from 'axios';
+
+// const asyncTest = async () => {
+//    const startTime = Date.now();
+//    await axios.get('http://http-api.isimisi.live/asyncTest');
+
+//    const timeResponse1 = Date.now() - startTime;
+
+//    await axios.get('http://http-api.isimisi.live/asyncTest');
+
+//    const timeReponse2 = Date.now() - startTime;
+
+//    const difference = timeReponse2 - timeResponse1;
+//    return timeReponse2;
+// };
+
+// const syncTest = async () => {
+//    const startTime = Date.now();
+//    await axios.get('http://http-api.isimisi.live/syncTest');
+
+//    const timeResponse1 = Date.now() - startTime;
+
+//    await axios.get('http://http-api.isimisi.live/syncTest');
+
+//    const timeReponse2 = Date.now() - startTime;
+
+//    const difference = timeReponse2 - timeResponse1;
+//    return timeReponse2;
+// };
+
+// (async () => {
+//    const async = [];
+//    const sync = [];
+
+//    for (let i = 0; i < 10; i++) {
+//       const syncDiff = await syncTest();
+//       const asyncDiff = await asyncTest();
+//       sync.push(syncDiff);
+//       async.push(asyncDiff);
+//    }
+
+//    const syncAvg = sync.reduce((a, b) => a + b, 0) / sync.length;
+//    const asyncAvg = async.reduce((a, b) => a + b, 0) / async.length;
+
+//    console.log('Average Synchronous response difference: ', syncAvg);
+//    console.log('Average Asynchronous response difference: ', asyncAvg);
+// })();
 
 (async () => {
-   try {
-      const id1 = await User.create({
-         first_name: 'isaac',
-         password: 'nadejinn7',
-         email: 'isaacj.ahmad@gmail.com',
-      });
+   const startTime = Date.now();
 
-      const id2 = await User.create({
-         first_name: 'isaac',
-         password: 'nadejinn7',
-         email: 'isaac_jacob_ahmad@hotmail.com',
-      });
+   // const promises = [
+   //    axios.get('http://http-api.isimisi.live/asyncTest'),
+   //    axios.get('http://http-api.isimisi.live/asyncTest'),
+   // ];
 
-      const [user1] = await User.find(id1);
-      const [user2] = await User.find(id2);
-
-      user1.verified = 1;
-      user2.verified = 1;
-
-      await User.update(user1, id1);
-      await User.update(user2, id2);
-   } catch (error) {
-      console.log(error);
+   // await Promise.all(promises);
+   for (let i = 0; i < 1000000000; i++) {
+      // do nothing
    }
+
+   const responseTime = Date.now() - startTime;
+   console.log(responseTime);
 })();
+
+// function pause(milliseconds) {
+// 	var dt = new Date();
+// 	while ((new Date()) - dt <= milliseconds) { /* Do nothing */ }
+// }
+// console.time()
+// pause(1000)
+// console.timeEnd()
