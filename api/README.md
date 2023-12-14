@@ -1,7 +1,7 @@
 # DIS Exam API
 ## Setup API - Backend
 
-- kør npm install <br>
-- kør npm run migrations <br>
-- kør npm run dev <br>
-- Start frontend serveren
+- `npm install` <br>
+- `npm run migrations` <br>
+- `npm run dev` <br>
+- Start frontend server
