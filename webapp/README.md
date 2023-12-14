@@ -1,5 +1,5 @@
-# DIS Godkendelsesopgave 2 WebApp
+# DIS Exam WebApp
 ## Setup WebApp - Frontend
 
-- kør npm install <br>
-- kør npm start <br>
+- `npm install` <br>
+- `npm start` <br>
