@@ -1,4 +1,4 @@
-# DIS Godkendelsesopgave 2 API
+# DIS Exam API
 ## Setup API - Backend
 
 - kør npm install <br>
