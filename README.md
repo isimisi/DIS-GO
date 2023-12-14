@@ -1,4 +1,3 @@
 # DIS-Exam
-Eksamen i Distribuerede Systemer
-
-- Læs README i hhv. api og webapp folderen
+School project in Computer networks & Distributed systems
+- README exists in api and webapp folder
